@@ -1,11 +1,8 @@
-# POLI 301: The Political Science Discipline
-
-![](static/images/POLI301.png)
+# GVPT-UMD: Data Visualization Workshop
 
 
-This repo contains code for generating [POLI 301](http://quantf19.juanftellez.com) at The University of South Carolina. 
-
+This repo contains...
 
 ## Theme
 
-This site uses Hugo + a version of the theme developed by [Kieran Healy](https://kieranhealy.org/) whose theme is based on [Andrew Heiss's](https://andrewheiss.com).
+This site uses Hugo + a version of the theme developed by [Kieran Healy](https://kieranhealy.org/) whose theme is based on [Andrew Heiss's](https://andrewheiss.com). I started using this theme after seein the amazing teaching websites built by [Juan Fernando Tellez]("")

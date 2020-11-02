@@ -1,0 +1,289 @@
+---
+title: Data Visualization in R
+slug: code
+output:
+  blogdown::html_page:
+    css: /style/style.css
+    toc: false
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+  <link rel="stylesheet" href="/style/style.css" type="text/css" />
+
+
+<pre class="r"><code>knitr::opts_chunk$set(message=FALSE, warning = FALSE)</code></pre>
+<p>As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers); just a few of your peers will know where to look at that table, while a nice graph can be quite intuitive to follow through.</p>
+<p>This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggolot2, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph.</p>
+<div id="main-goals" class="section level2">
+<h2>Main Goals</h2>
+<p>By the end of the workshop, I expect you to know how to:</p>
+<ul>
+<li>Prepare your data for easy visualization.</li>
+<li>Run and extract information from statistical models.</li>
+<li>Use ggplot2 to build an informative visualization.</li>
+</ul>
+</div>
+<div id="how-to-get-there" class="section level2">
+<h2>How to get there?</h2>
+<ul>
+<li>Basics of ggplot</li>
+<li>Tidy Data with TidyR</li>
+<li>Broom for Model Quantities</li>
+<li>Case studies (from my own work)</li>
+</ul>
+</div>
+<div id="basics-of-ggplot2" class="section level1">
+<h1>Basics of ggplot2</h1>
+<div id="what-do-you-see" class="section level2">
+<h2>What do you see?</h2>
+<ul>
+<li><p>How many variables?</p></li>
+<li><p>How many different Aesthetics?</p></li>
+<li><p>What else?</p></li>
+</ul>
+<p><img src="/images/res_no_band.png" /></p>
+</div>
+<div id="how-ggplot-works" class="section level2">
+<h2>How ggplot works</h2>
+<p>Data Visualization involves connecting (mapping) variables on your data to graphical representations. Ggplot provides you with a language to map data and to a plot.</p>
+<p>Ggplot is based on the <a href="https://www.springer.com/gp/book/9780387245447">Grammar of Graphics</a>. In summary, ggplot works by connecting data and visual components through a function called <strong>aesthethics mapping</strong> (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from <a href="https://socviz.co/makeplot.html#makeplot">Kieran Healy</a> summarizes well the logic:</p>
+<p><img src="/images/ggplot_flow.png" style="width:50.0%" /></p>
+</div>
+<div id="part-1tidy-your-data" class="section level2">
+<h2>Part 1:Tidy your data</h2>
+<p>Understanding what a <strong>tidy data</strong> entails is key to use ggplot. I cannot emphasize this enough, but getting you data ready (and by ready I mean tidy and with the proper labels) is 80% of the gpplot work. Most of the times some friends ask me for help with a graph, the solution is the pre-processing, and not in the plotting part of their codes.</p>
+<div id="starting-some-coding" class="section level3">
+<h3>Starting some coding</h3>
+<p>Let’s first call our packages. I am using the package <a href="http://trinker.github.io/pacman/vignettes/Introduction_to_pacman.html">packman</a> to help me manage my libraries.</p>
+<pre class="r"><code>pacman::p_load(tidyverse, gapminder, kableExtra, tidyr, ggthemes, patchwork)</code></pre>
+<p>This is a tidy data:</p>
+<pre class="r"><code>gapminder</code></pre>
+<pre><code>## # A tibble: 1,704 x 6
+##    country     continent  year lifeExp      pop gdpPercap
+##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.
+##  6 Afghanistan Asia       1977    38.4 14880372      786.
+##  7 Afghanistan Asia       1982    39.9 12881816      978.
+##  8 Afghanistan Asia       1987    40.8 13867957      852.
+##  9 Afghanistan Asia       1992    41.7 16317921      649.
+## 10 Afghanistan Asia       1997    41.8 22227415      635.
+## # … with 1,694 more rows</code></pre>
+<p>There are three interrelated rules which make a <a href="https://r4ds.had.co.nz/tidy-data.html">dataset tidy</a>.</p>
+<ul>
+<li>Each variable must have its own column.</li>
+<li>Each observation must have its own row.</li>
+<li>Each value must have its own cell.</li>
+</ul>
+<p><img src="/images/tidy-1.png" style="width:80.0%" /></p>
+<p>Why is it important to have a tidy dataset? A more general answer is that to map a variable to a plot, you need this variables to be defined as an single column. A more practical answer is that all the tidyverse packages (dplyr, purrr, tidyr, ggplot…) work with tidy data.</p>
+</div>
+<div id="getting-our-own-data" class="section level3">
+<h3>Getting our own data</h3>
+<p>Throughout this workshop, we will work with the pooling data for the last Presidential Election in the US aggregated by The Economist. Let’s download the data:</p>
+<pre class="r"><code>data &lt;- read_csv(&quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18Lipu1_i3ID9JE06voJEz2EXm6JW4Vh11zmndyTwejMavuNntzIWLY0RyhA1UsVEen0/pub?gid=0&amp;single=true&amp;output=csv&quot;)</code></pre>
+</div>
+<div id="is-this-data-tidy" class="section level3 alert">
+<h3>Is this data tidy ?</h3>
+<pre class="r"><code>glimpse(data)</code></pre>
+<pre><code>## Rows: 1,546
+## Columns: 17
+## $ state                  &lt;chr&gt; &quot;TX&quot;, &quot;NC&quot;, &quot;CO&quot;, &quot;OH&quot;, &quot;IA&quot;, &quot;WI&quot;, &quot;TX&quot;, &quot;PA&quot;…
+## $ pollster               &lt;chr&gt; &quot;Data for Progress&quot;, &quot;Data for Progress&quot;, &quot;Kea…
+## $ sponsor                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ start.date             &lt;chr&gt; &quot;10/27/2020&quot;, &quot;10/27/2020&quot;, &quot;10/29/2020&quot;, &quot;10/…
+## $ end.date               &lt;chr&gt; &quot;11/1/2020&quot;, &quot;11/1/2020&quot;, &quot;11/1/2020&quot;, &quot;11/1/2…
+## $ entry.date.time..et.   &lt;chr&gt; &quot;11/1/2020 21:24:00&quot;, &quot;11/1/2020 21:24:00&quot;, &quot;1…
+## $ number.of.observations &lt;dbl&gt; 926, 908, 502, 1136, 853, 789, 2947, 2703, 162…
+## $ population             &lt;chr&gt; &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;…
+## $ mode                   &lt;chr&gt; &quot;Online&quot;, &quot;Online&quot;, &quot;Live Phone&quot;, &quot;Online&quot;, &quot;O…
+## $ biden                  &lt;dbl&gt; 49, 50, 53, 48, 49, 51, 47, 52, 49, 48, 49, 54…
+## $ trump                  &lt;dbl&gt; 48, 48, 41, 49, 48, 47, 49, 44, 45, 47, 47, 39…
+## $ biden_margin           &lt;dbl&gt; 1, 2, 12, -1, 1, 4, -2, 8, 4, 1, 2, 15, -5, 7,…
+## $ other                  &lt;dbl&gt; 2, 2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ undecided              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ url                    &lt;chr&gt; &quot;https://filesforprogress.org/datasets/2020/11…
+## $ include                &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…
+## $ notes                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+</div>
+<div id="pivoting-to-make-the-data-tidy-pivot-longer" class="section level3">
+<h3>Pivoting to make the data tidy (Pivot Longer)</h3>
+<p>Our main variables of interest are in the wide format (Trump and Biden’s Polls Results). This is wide dataset because we are spreading the variable vote choice is spread among two columns. To make it a long data set, we will use the function <code>pivot_longer</code> from the <code>tidyr</code> package.</p>
+<pre class="r"><code>data_long &lt;- data %&gt;% 
+  pivot_longer(cols=c(biden,trump), 
+               names_to=&quot;Vote_Choice&quot;, 
+               values_to=&quot;Vote&quot;) %&gt;%
+  mutate(end.date=as.Date(str_replace_all(end.date, &quot;/&quot;, &quot;-&quot;), format = &quot;%m-%d-%Y&quot;))
+
+national_polls &lt;- data_long %&gt;% filter(state==&quot;--&quot;)
+state_polls &lt;- data_long %&gt;% filter(state!=&quot;--&quot;)
+swing_states &lt;- c(&quot;PA&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;AZ&quot;, &quot;IO&quot;, &quot;OH&quot;, &quot;TX&quot;, &quot;MI&quot;, &quot;WI&quot;)</code></pre>
+<p>We have three inputs here:</p>
+<ul>
+<li><code>cols</code>: the variables you want to convert from wide to long.</li>
+<li><code>names_to</code>: new variable for the columns names from the wide data.</li>
+<li><code>values_to</code>: new variable for the values from the wide data.</li>
+</ul>
+<p>With this tidy dataset, we can start our visualization.</p>
+</div>
+</div>
+<div id="part-2-linking-the-data-to-visuals-mapping." class="section level2">
+<h2>Part 2: Linking the Data to Visuals (Mapping).</h2>
+<p>Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps.</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>The Data Step</strong>: Tell ggplot what your data is.</p></li>
+<li><p><strong>The Mapping Step</strong>: Tell ggplot <strong>what</strong> variables -&gt; visuals you want to see.</p></li>
+<li><p><strong>The Geom Step</strong>: Tell ggplot <strong>how</strong> you want to see</p></li>
+</ol>
+<p>Let’s plot all the polls over time using a scatter plot</p>
+<pre class="r"><code>ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote)) + # the map step
+geom_point()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Bit of a mess. But we will make it prettier.</p>
+</div>
+<div id="which-aesthetics-i-can-use" class="section level2">
+<h2>Which Aesthetics I can use?</h2>
+<p><img src="/images/aes.png" /></p>
+</div>
+<div id="some-aesthethics-examples" class="section level2">
+<h2>Some Aesthethics Examples</h2>
+<div id="color" class="section level3">
+<h3>Color</h3>
+<pre class="r"><code>ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote, 
+           color=Vote_Choice)) + # the map step
+geom_point()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+### Shape</p>
+<pre class="r"><code>ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           shape=Vote_Choice)) + # the map step
+geom_point() </code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+</div>
+<div id="some-geom-examples" class="section level2">
+<h2>Some Geom Examples</h2>
+<div id="smooting-the-data" class="section level3">
+<h3>Smooting the data</h3>
+<pre class="r"><code>ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="showing-some-density" class="section level3">
+<h3>Showing some density</h3>
+<pre class="r"><code>ggplot(data=national_polls,
+       aes(x=end.date)) +
+geom_density(fill=&quot;steelblue&quot;)</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code># ANother one
+ggplot(data=state_polls %&gt;% filter(state%in%swing_states)) +
+  geom_density(aes(x=end.date, fill=state), alpha=.3) +
+  facet_wrap(~state, ncol=3)</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+</div>
+<div id="bars" class="section level3">
+<h3>Bars</h3>
+<pre class="r"><code>ggplot(data=data_long,
+       aes(x=end.date, fill=mode)) +
+geom_bar() +
+scale_fill_brewer(palette = &quot;Set3&quot;)</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="box-plot" class="section level3">
+<h3>Box Plot</h3>
+<pre class="r"><code># Another example
+ggplot(state_polls %&gt;% filter(state%in%swing_states),
+       aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(&quot;biden&quot;=&quot;blue&quot;,&quot;trump&quot;=&quot;red&quot;)) </code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>A full set of geoms can be found <a href="http://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">here</a></p>
+</div>
+</div>
+<div id="part-4-adjust-scales-labels-titles-and-more." class="section level2">
+<h2>Part 4: Adjust scales, labels, titles, and more.</h2>
+<p>After you are set on the mapping and geoms, the next step is to adjust the scale of your the graph. These functions are usually on the form: <code>scale_aesthethic_type</code>. These functions usually change how the aesthethics are presented. For exemple:</p>
+<ul>
+<li><code>scale_x_log10</code>: To convert the numeric axis to the log scale</li>
+<li><code>scale_y_reverse</code>: To reverse the scale</li>
+<li><code>scale_fill_manual</code>: To create your own discrete set of fill.</li>
+<li><code>scale_colour_brewer()</code>: Change the Pallet of Colours</li>
+</ul>
+<pre class="r"><code>p &lt;- ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, shape=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth() +
+scale_shape_manual(values =c(21, 23)) +
+scale_fill_manual(values=c(&quot;red&quot;, &quot;blue&quot;)) +
+scale_color_manual(values=c(&quot;red&quot;, &quot;blue&quot;), , labels=c(&quot;Biden&quot;, &quot;Trump&quot;), 
+                  name= &quot;Vote Choice&quot;) +
+scale_x_date(date_breaks = &quot;1 month&quot;, date_labels = &quot;%b %d&quot;) +
+guides(fill=FALSE, shape=FALSE) +
+labs(x = &quot;End of the Poll&quot;, y = &quot;Results&quot;,
+         title = &quot;Polls US Presidential Election&quot;,
+         subtitle = &quot;&quot;,
+         caption = &quot;Source: The Economist&quot;)  
+p</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="easier-adjustments" class="section level2">
+<h2>Easier Adjustments</h2>
+<p>A lot of the adjustments you can make on a plot go inside of the theme function. In the sprit of having a workflow for data visualization, my approach is to create a theme for my graphs, and use the same theme throughout all the plots of the same project. An example below</p>
+<pre class="r"><code># Set up my theme  ------------------------------------------------------------
+
+RColorBrewer::display.brewer.all()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code>my_font &lt;- &quot;Palatino Linotype&quot;
+my_bkgd &lt;- &quot;#f5f5f2&quot;
+pal &lt;- RColorBrewer::brewer.pal(9, &quot;Spectral&quot;)
+
+
+my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d&quot;),
+                  rect = element_rect(fill = my_bkgd),
+                  plot.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.border = element_rect(color=&quot;black&quot;), 
+                  strip.background = element_rect(color=&quot;black&quot;, fill=&quot;gray85&quot;), 
+                  legend.background = element_rect(fill = my_bkgd, color = NA),
+                  legend.key = element_rect(size = 6, fill = &quot;white&quot;, colour = NA), 
+                  legend.key.size = unit(1, &quot;cm&quot;),
+                  legend.text = element_text(size = 14, family = my_font),
+                  legend.title = element_text(size=14),
+                  plot.title = element_text(size = 22, face = &quot;bold&quot;, family=my_font),
+                  plot.subtitle = element_text(size=16, family=my_font),
+                  axis.title= element_text(size=22),
+                  
+                  axis.text = element_text(size=14, family=my_font),
+                  axis.title.x = element_text(hjust=1),
+                  strip.text = element_text(family = my_font, color = &quot;#22211d&quot;,
+                                            size = 13, face=&quot;italic&quot;))
+
+theme_set(theme_bw() + my_theme)</code></pre>
+<p>The last function sets your environment to use yout newly created theme for all your plots. Lets see this in our old graph:</p>
+<pre class="r"><code>p</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Or you can use one of the pre-set themes in R</p>
+<pre class="r"><code>library(ggthemes)
+library(hrbrthemes)
+ p + 
+  theme_minimal()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code> p + 
+  theme_economist()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<pre class="r"><code>p + 
+  theme_fivethirtyeight()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-3.png" width="672" /></p>
+<pre class="r"><code>p + 
+  theme_ipsum()</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-4.png" width="672" /></p>
+</div>
+</div>

@@ -1,19 +1,9 @@
 main:
-  - name: Syllabus
-    url: /syllabus/
+  - name: Code
+    url: /code/
     weight: 1
-  - name: Schedule
-    url: /schedule/
-    weight: 2
-  - name: Assignments
-    url: /assignment/
-    weight: 3
-  - name: Reference
+  - name: References
     url: /reference/
-    weight: 5
-    
-assignment:
-  - name: Overview
-    weight: 1
-  - name: Problem sets
     weight: 2
+#  - name: Schedule
+#    url: /schedule/

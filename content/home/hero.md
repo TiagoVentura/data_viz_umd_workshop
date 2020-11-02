@@ -5,17 +5,18 @@ headless: true
 active: true
 weight: 10
 
-title: "Quantitative Methods"
+title: Data Visualization
 
-# Hero image (optional). Enter filename of an image in the `static/img/` folder.
+# Hero image (optional). Enter filename of an image in the `static/media/` folder.
+
 hero_media: dataviz_hires.png
 
 design:
   background:
-    # Background gradient
-    #gradient_start: '#2E3440'
-    #gradient_end: '#4C566A'
-    image: red-green-computer.gif
+    #Background gradient
+    gradient_start: "#2E3440"
+    gradient_end: "#4C566A"
+    image: horst-eco-r4ds.png 
     image_size: "contain"
     image_darken: 0.4
 
@@ -23,8 +24,8 @@ design:
     text_color_light: true
 
 cta_note:
-  label: Spring 2021<br>Department of Political Science<br>University of South Carolina
+  label: _Fall 2020<br>Government and Politics<br>University of Maryland_
 
 ---
 
-**POLI 301: The Political Science Discipline**
+**(Tidying your model into a nice plot)**

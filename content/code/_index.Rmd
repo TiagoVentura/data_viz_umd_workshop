@@ -1,0 +1,311 @@
+---
+title: Data Visualization in R
+slug: code
+output:
+  blogdown::html_page:
+    css: /style/style.css
+    toc: false
+---
+```{r}
+knitr::opts_chunk$set(message=FALSE, warning = FALSE)
+```
+
+As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers); just a few of your peers will know where to look at that table, while a nice graph can be quite intuitive to follow through. 
+
+This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggolot2, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph. 
+
+## Main Goals
+
+By the end of the workshop, I expect you to know how to:
+
+- Prepare your data for easy visualization. 
+- Run and extract information from statistical models.
+- Use ggplot2 to build an informative visualization. 
+
+## How to get there?
+
+- Basics of ggplot
+- Tidy Data with TidyR
+- Broom for Model Quantities
+- Case studies (from my own work)
+
+# Basics of ggplot2 
+
+## What do you see? 
+
+- How many variables?
+
+- How many different Aesthetics?
+
+- What else?
+
+![](/images/res_no_band.png)
+
+## How ggplot works
+
+Data Visualization involves connecting (mapping) variables on your data to graphical representations. Ggplot provides you with a language to map data and to a plot. 
+
+Ggplot is based on the [Grammar of Graphics](https://www.springer.com/gp/book/9780387245447). In summary, ggplot works by connecting data and visual components through a function called __aesthethics mapping__ (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from [Kieran Healy](https://socviz.co/makeplot.html#makeplot) summarizes well the logic:
+
+![](/images/ggplot_flow.png){ width=50% }
+
+## Part 1:Tidy your data
+
+Understanding what a **tidy data** entails is key to use ggplot. I cannot emphasize this enough, but getting you data ready (and by ready I mean tidy and with the proper labels) is 80% of the gpplot work. Most of the times some friends ask me for help with a graph, the solution is the pre-processing, and not in the plotting part of their codes. 
+
+
+### Starting some coding
+
+Let's first call our packages. I am using the package [packman](http://trinker.github.io/pacman/vignettes/Introduction_to_pacman.html) to help me manage my libraries.
+
+```{r call packages}
+pacman::p_load(tidyverse, gapminder, kableExtra, tidyr, ggthemes, patchwork)
+```
+
+This is a tidy data:
+
+```{r}
+gapminder
+```
+
+
+There are three interrelated rules which make a [dataset tidy](https://r4ds.had.co.nz/tidy-data.html). 
+
+- Each variable must have its own column.
+- Each observation must have its own row.
+- Each value must have its own cell.
+
+![](/images/tidy-1.png){ width=80% }
+
+Why is it important to have a tidy dataset? A more general answer is that to map a variable to a plot, you need this variables to be defined as an single column. A more practical answer is that all the tidyverse packages (dplyr, purrr, tidyr, ggplot...) work with tidy data. 
+
+### Getting our own data
+
+Throughout this workshop, we will work with the pooling data for the last Presidential Election in the US aggregated by The Economist. Let's download the data:
+
+```{r}
+data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18Lipu1_i3ID9JE06voJEz2EXm6JW4Vh11zmndyTwejMavuNntzIWLY0RyhA1UsVEen0/pub?gid=0&single=true&output=csv")
+```
+
+
+### Is this data tidy ? {.alert}
+
+```{r}
+glimpse(data)
+```
+
+
+### Pivoting to make the data tidy (Pivot Longer)
+
+Our main variables of interest are in the wide format (Trump and Biden's Polls Results). This is wide dataset because we are spreading the variable vote choice is spread among two columns. To make it a long data set, we will use the function `pivot_longer` from the `tidyr` package. 
+
+```{r}
+data_long <- data %>% 
+  pivot_longer(cols=c(biden,trump), 
+               names_to="Vote_Choice", 
+               values_to="Vote") %>%
+  mutate(end.date=as.Date(str_replace_all(end.date, "/", "-"), format = "%m-%d-%Y"))
+
+national_polls <- data_long %>% filter(state=="--")
+state_polls <- data_long %>% filter(state!="--")
+swing_states <- c("PA", "FL", "GA", "AZ", "IO", "OH", "TX", "MI", "WI")
+
+```
+
+We have three inputs here: 
+
+- `cols`: the variables you want to convert from wide to long.
+- `names_to`: new variable for the columns names from the wide data.
+- `values_to`: new variable for the values from the wide data. 
+
+With this tidy dataset, we can start our visualization. 
+
+## Part 2: Linking the Data to Visuals (Mapping).
+
+Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
+
+1. **The Data Step**: Tell ggplot what your data is. 
+
+2. **The Mapping Step**: Tell ggplot **what** variables -> visuals you want to see.
+
+3. **The Geom Step**: Tell ggplot **how** you want to see
+
+Let's plot all the polls over time using a scatter plot
+
+
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote)) + # the map step
+geom_point()
+```
+
+
+Bit of a mess. But we will make it prettier. 
+
+## Which Aesthetics I can use?
+
+![](/images/aes.png)
+
+## Some Aesthethics Examples
+
+### Color
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote, 
+           color=Vote_Choice)) + # the map step
+geom_point()
+
+```
+### Shape
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           shape=Vote_Choice)) + # the map step
+geom_point() 
+```
+
+## Some Geom Examples
+
+### Smooting the data
+
+```{r}
+ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth()
+```
+
+### Showing some density
+
+```{r}
+ggplot(data=national_polls,
+       aes(x=end.date)) +
+geom_density(fill="steelblue")
+
+# ANother one
+ggplot(data=state_polls %>% filter(state%in%swing_states)) +
+  geom_density(aes(x=end.date, fill=state), alpha=.3) +
+  facet_wrap(~state, ncol=3)
+
+```
+
+### Bars
+
+```{r}
+ggplot(data=data_long,
+       aes(x=end.date, fill=mode)) +
+geom_bar() +
+scale_fill_brewer(palette = "Set3")
+```
+
+
+
+### Box Plot 
+
+
+```{r}
+# Another example
+ggplot(state_polls %>% filter(state%in%swing_states),
+       aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c("biden"="blue","trump"="red")) 
+
+```
+
+A full set of geoms can be found [here](http://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf)
+
+## Part 4: Adjust scales, labels,  titles, and more.
+
+After you are set on the mapping and geoms, the next step is to adjust the scale of your the graph. These functions are usually on the form: `scale_aesthethic_type`. These functions usually change how the aesthethics are presented. For exemple:
+
+- `scale_x_log10`: To convert the numeric axis to the log scale
+- `scale_y_reverse`: To reverse the scale
+- `scale_fill_manual`: To create your own discrete set of fill. 
+- `scale_colour_brewer()`: Change the Pallet of Colours
+
+
+```{r}
+
+p <- ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, shape=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth() +
+scale_shape_manual(values =c(21, 23)) +
+scale_fill_manual(values=c("red", "blue")) +
+scale_color_manual(values=c("red", "blue"), , labels=c("Biden", "Trump"), 
+                  name= "Vote Choice") +
+scale_x_date(date_breaks = "1 month", date_labels = "%b %d") +
+guides(fill=FALSE, shape=FALSE) +
+labs(x = "End of the Poll", y = "Results",
+         title = "Polls US Presidential Election",
+         subtitle = "",
+         caption = "Source: The Economist")  
+p
+```
+
+
+## Easier Adjustments
+
+A lot of the adjustments you can make on a plot go inside of the theme function. In the sprit of having a workflow for data visualization, my approach is to create a theme for my graphs, and use the same theme throughout all the plots of the same project. An example below
+
+```{r}
+# Set up my theme  ------------------------------------------------------------
+
+RColorBrewer::display.brewer.all()
+my_font <- "Palatino Linotype"
+my_bkgd <- "#f5f5f2"
+pal <- RColorBrewer::brewer.pal(9, "Spectral")
+
+
+my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
+                  rect = element_rect(fill = my_bkgd),
+                  plot.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.border = element_rect(color="black"), 
+                  strip.background = element_rect(color="black", fill="gray85"), 
+                  legend.background = element_rect(fill = my_bkgd, color = NA),
+                  legend.key = element_rect(size = 6, fill = "white", colour = NA), 
+                  legend.key.size = unit(1, "cm"),
+                  legend.text = element_text(size = 14, family = my_font),
+                  legend.title = element_text(size=14),
+                  plot.title = element_text(size = 22, face = "bold", family=my_font),
+                  plot.subtitle = element_text(size=16, family=my_font),
+                  axis.title= element_text(size=22),
+                  
+                  axis.text = element_text(size=14, family=my_font),
+                  axis.title.x = element_text(hjust=1),
+                  strip.text = element_text(family = my_font, color = "#22211d",
+                                            size = 13, face="italic"))
+
+theme_set(theme_bw() + my_theme)
+
+```
+
+
+The last function sets your environment to use yout newly created theme for all your plots. Lets see this in our old graph:
+
+```{r}
+p
+
+```
+
+Or you can use one of the pre-set themes in R
+
+```{r}
+library(ggthemes)
+library(hrbrthemes)
+ p + 
+  theme_minimal()
+ p + 
+  theme_economist()
+p + 
+  theme_fivethirtyeight()
+p + 
+  theme_ipsum()
+
+```
+

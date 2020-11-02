@@ -9,7 +9,7 @@
 #   Latest themes (may require updating): https://sourcethemes.com/academic/themes/
 #   Browse built-in themes in `themes/academic/data/themes/`
 #   Browse user installed themes in `data/themes/`
-theme: "inferno"
+theme: "minimal"
 
 # Enable users to switch between day and night mode?
 day_night: false
@@ -37,7 +37,7 @@ font_size: "L"
 site_type: "Course"
 
 # Description for social sharing and search engines. If undefined, superuser role is used in place.
-description: "Undergraduate political science quantitative methods with R"
+description: "Data Visualization Workshop"
 
 # Display a logo in navigation bar rather than title (optional).
 #   To enable, place an image in `static/img/` and reference its filename below. To disable, set the value to "".
@@ -74,7 +74,7 @@ privacy_pack: false
 # Enable visitors to edit pages?
 #   `repo` defines the repository URL. `editable` defines which page types can be edited.
 edit_page:
-  repo_url: 'https://github.com/hail2thief/poli-301'
+  repo_url: 'https://github.com/TiagoVentura'
   content_dir: ''
   repo_branch: master
   editable:
@@ -89,37 +89,36 @@ edit_page:
 ## Additionally, for organizations, these details may be used to enrich search engine results.
 ############################
 
-author: Juan F. Tellez
+author: Tiago Ventura
 
 instructor: 
-  name: Juan F. Tellez
-  email: tellezj@mailbox.sc.edu
-  url: "https://www.juanftellez.com"
-  twitter: juanftellez14
-  github: hail2thief
-  office: "343 Gambrell Hall"
+  name: Tiago Ventura
+  email: venturat@umd.edu
+  url: "http://tiagoventura.rbind.io/"
+  twitter: "_Tiagoventura"
+  github: TiagoVentura
+  office: "Chiconteague, 414"
   contact_policy: >-
-    E-mail and Slack are the best ways to get in contact with me. I will try to respond to all course-related e-mails and Slack messages within 24 hours (*really*), but also remember that life can be busy and chaotic for everyone (including me!), so if I don't respond right away, don't worry!
-  appointment_url: https://calendly.com/juan-f-tellez/15min
-  
+    If you ever need any help with the material of this workshop, please fell free to email me!
+
 course:
-  number: "POLI 301"
-  semester: "Spring 2021"
-  days: "MWF"
-  time: "10:50-11:40 AM"
-  location: "302 GAMBRL"
-  twitter: juanftellez14
-  dates: "January 11–May 5, 2021"
-  github: "hail2thief/poli-301"
+  number: "GVPT GSA"
+  semester: "FALL 2020"
+  days: "Tuesday"
+  time: "4:00 PM"
+  location: "Virtual"
+  twitter: _Tiagoventura
+  dates: "December 1, 2021"
+  github: "TiagoVentura/umd_dataviz_workshop"
   copyrightYear: "2020"
 
 university: 
-  name: University of South Carolina
-  url: "https://www.sc.edu/study/colleges_schools/artsandsciences/political_science/index.php"
+  name: University of Maryland
+  url: ""
 
 school:
-  name: Department of Political Science
-  url: "https://www.sc.edu/study/colleges_schools/artsandsciences/political_science/index.php"
+  name: Government and Politics
+  url: ""
 
 
 
@@ -131,7 +130,7 @@ school:
 sharing_image: "social-image.png"
 
 # Twitter username (without @). Used when a visitor shares your site on Twitter.
-twitter: "juanftellez14"
+twitter: "_TiagoVentura"
 
 
 ############################
@@ -154,7 +153,7 @@ gravatar: false
 
 # Main menu alignment (l = left, c = center, r = right) and logo options.
 main_menu:
-  align: r
+  align: c
   show_logo: true
 
 # Show estimated reading time for posts? (true/false)
