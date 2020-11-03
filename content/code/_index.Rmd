@@ -279,19 +279,28 @@ my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
                   strip.text = element_text(family = my_font, color = "#22211d",
                                             size = 13, face="italic"))
 
-theme_set(theme_bw() + my_theme)
-
 ```
+
+
 
 
 The last function sets your R environment to use your newly created theme in all your plots. Lets see this in our old graph:
 
-```{r}
-p
+```{r eval=FALSE}
+# This sets up for all your plots
+theme_set(theme_bw() + my_theme)
 
 ```
 
-Anothe option is to use one of the pre-set themes in R
+Or you can do by hand
+```{r}
+p +
+  theme_base() +
+  my_theme
+
+```
+
+Another option is to use one of the pre-set themes in R
 
 ```{r}
 library(ggthemes)
@@ -436,17 +445,12 @@ To conclude our workshop, I will show you the code my recent paper (co-authored 
 
 The plan is to estimate a model of partisanship on three different outcomes. Let's see how we can do this with the tools we learned so far.
 
-```{r}
-
-load("CV_data.Rdata")
-
-```
 
 
 #### Tidy the data
 
-```{r eval=FALSE}
-load("/data/CV_data.Rdata")
+```{r}
+load("CV_data.Rdata")
 library(tidyverse)
 library(tidyr)
 
@@ -454,10 +458,6 @@ d_pivot <- d %>%
             pivot_longer(cols=c(covid_job, covid_health, covid_government), 
                          names_to="covid", 
                          values_to="covid_values") 
-
-
-View(d_pi)
-levels(d_pivot$vote_choice)
 
 ```
 
@@ -511,7 +511,9 @@ ggplot(to_plot, aes(y=estimate, x=labels_iv,
   geom_hline(yintercept = 0, linetype="dashed", color="darkred") + 
   scale_color_manual(values=c("Bolsonaro Voters"=pal[9], "Haddad Voters"=pal[1]),
                      name="Who would you vote for?") +
-  facet_wrap(~outcome) 
+  facet_wrap(~outcome)  + 
+  theme_bw() +
+  theme(strip.text = element_text(size=10))
 
 ```
 

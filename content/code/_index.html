@@ -89,23 +89,23 @@ output:
 <div id="is-this-data-tidy" class="section level3 alert">
 <h3>Is this data tidy ?</h3>
 <pre class="r"><code>glimpse(data)</code></pre>
-<pre><code>## Rows: 1,608
+<pre><code>## Rows: 1,614
 ## Columns: 17
-## $ state                  &lt;chr&gt; &quot;WI&quot;, &quot;PA&quot;, &quot;NC&quot;, &quot;MI&quot;, &quot;AZ&quot;, &quot;FL&quot;, &quot;--&quot;, &quot;--&quot;…
-## $ pollster               &lt;chr&gt; &quot;Redfield &amp; Wilton Strategies&quot;, &quot;Redfield &amp; Wi…
+## $ state                  &lt;chr&gt; &quot;MT&quot;, &quot;ME&quot;, &quot;IA&quot;, &quot;WI&quot;, &quot;PA&quot;, &quot;NC&quot;, &quot;MI&quot;, &quot;FL&quot;…
+## $ pollster               &lt;chr&gt; &quot;Change Research&quot;, &quot;Change Research&quot;, &quot;Change …
 ## $ sponsor                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
-## $ start.date             &lt;chr&gt; &quot;10/26/2020&quot;, &quot;10/26/2020&quot;, &quot;10/26/2020&quot;, &quot;10/…
-## $ end.date               &lt;chr&gt; &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/…
-## $ entry.date.time..et.   &lt;chr&gt; &quot;11/2/2020 21:01:00&quot;, &quot;11/2/2020 21:01:00&quot;, &quot;1…
-## $ number.of.observations &lt;dbl&gt; 800, 2125, 1489, 1212, 889, 1587, 1265, 1200, …
+## $ start.date             &lt;chr&gt; &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/…
+## $ end.date               &lt;chr&gt; &quot;11/2/2020&quot;, &quot;11/2/2020&quot;, &quot;11/1/2020&quot;, &quot;11/1/2…
+## $ entry.date.time..et.   &lt;chr&gt; &quot;11/2/2020 23:42:00&quot;, &quot;11/2/2020 23:42:00&quot;, &quot;1…
+## $ number.of.observations &lt;dbl&gt; 920, 1024, 1084, 553, 699, 473, 383, 806, 409,…
 ## $ population             &lt;chr&gt; &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;…
 ## $ mode                   &lt;chr&gt; &quot;Online&quot;, &quot;Online&quot;, &quot;Online&quot;, &quot;Online&quot;, &quot;Onlin…
-## $ biden                  &lt;dbl&gt; 53, 50, 49, 54, 50, 50, 52, 51, 47, 51, 41, 50…
-## $ trump                  &lt;dbl&gt; 41, 45, 47, 41, 46, 46, 44, 44, 49, 43, 55, 48…
-## $ biden_margin           &lt;dbl&gt; 12, 5, 2, 13, 4, 4, 8, 7, -2, 8, -14, 2, -9, -…
-## $ other                  &lt;dbl&gt; 2, 1, 2, 1, 2, 1, NA, 2, 4, 6, 3, 1, 2, 4, 2, …
+## $ biden                  &lt;dbl&gt; 45, 52, 47, 53, 50, 49, 51, 51, 50, 52, 53, 50…
+## $ trump                  &lt;dbl&gt; 50, 40, 47, 45, 46, 47, 44, 48, 47, 42, 41, 45…
+## $ biden_margin           &lt;dbl&gt; -5, 12, 0, 8, 4, 2, 7, 3, 3, 10, 12, 5, 2, 13,…
+## $ other                  &lt;dbl&gt; 2, 6, 3, NA, NA, NA, NA, NA, NA, NA, 2, 1, 2, …
 ## $ undecided              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
-## $ url                    &lt;chr&gt; &quot;https://redfieldandwiltonstrategies.com/eve-o…
+## $ url                    &lt;chr&gt; &quot;https://docs.google.com/spreadsheets/d/1TyQc9…
 ## $ include                &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…
 ## $ notes                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
 </div>
@@ -261,27 +261,30 @@ my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d
                   axis.text = element_text(size=14, family=my_font),
                   axis.title.x = element_text(hjust=1),
                   strip.text = element_text(family = my_font, color = &quot;#22211d&quot;,
-                                            size = 13, face=&quot;italic&quot;))
-
-theme_set(theme_bw() + my_theme)</code></pre>
+                                            size = 13, face=&quot;italic&quot;))</code></pre>
 <p>The last function sets your R environment to use your newly created theme in all your plots. Lets see this in our old graph:</p>
-<pre class="r"><code>p</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Anothe option is to use one of the pre-set themes in R</p>
+<pre class="r"><code># This sets up for all your plots
+theme_set(theme_bw() + my_theme)</code></pre>
+<p>Or you can do by hand</p>
+<pre class="r"><code>p +
+  theme_base() +
+  my_theme</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Another option is to use one of the pre-set themes in R</p>
 <pre class="r"><code>library(ggthemes)
 library(hrbrthemes)
  p + 
   theme_minimal()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code> p + 
   theme_economist()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 <pre class="r"><code>p + 
   theme_fivethirtyeight()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-3.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-17-3.png" width="672" /></p>
 <pre class="r"><code>p + 
   theme_ipsum()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-4.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-17-4.png" width="672" /></p>
 </div>
 <div id="modelling-with-broom" class="section level2">
 <h2>Modelling with Broom</h2>
@@ -315,7 +318,7 @@ results</code></pre>
 ##   term        estimate std.error statistic  p.value
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 (Intercept)  46.7      0.318       147.  0.      
-## 2 days          0.0162   0.00156      10.4 5.33e-23</code></pre>
+## 2 days          0.0164   0.00156      10.5 2.06e-23</code></pre>
 </div>
 <div id="plot" class="section level3">
 <h3>Plot</h3>
@@ -326,7 +329,7 @@ results</code></pre>
   ggplot(data=., aes(y=estimate, ymin=lb, ymax=up, x=term)) +
   geom_pointrange() +
   coord_flip()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 </div>
 <div id="predicted-values-with-augment" class="section level3">
 <h3>Predicted Values with Augment</h3>
@@ -334,16 +337,16 @@ results</code></pre>
 <pre><code>## # A tibble: 495 x 8
 ##     Vote  days .fitted .resid .std.resid    .hat .sigma   .cooksd
 ##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
-##  1    52   304    51.6  0.379      0.140 0.00646   2.71 0.0000640
-##  2    51   304    51.6 -0.621     -0.230 0.00646   2.71 0.000172 
-##  3    52   306    51.7  0.347      0.128 0.00661   2.71 0.0000548
-##  4    48   304    51.6 -3.62      -1.34  0.00646   2.71 0.00584  
-##  5    50   305    51.6 -1.64      -0.606 0.00653   2.71 0.00121  
-##  6    53   305    51.6  1.36       0.505 0.00653   2.71 0.000837 
-##  7    53   306    51.7  1.35       0.499 0.00661   2.71 0.000827 
-##  8    53   305    51.6  1.36       0.505 0.00653   2.71 0.000837 
-##  9    50   306    51.7 -1.65      -0.612 0.00661   2.71 0.00125  
-## 10    50   305    51.6 -1.64      -0.606 0.00653   2.71 0.00121  
+##  1    52   305    51.7  0.339      0.126 0.00653   2.71 0.0000519
+##  2    52   304    51.6  0.355      0.132 0.00645   2.71 0.0000564
+##  3    51   304    51.6 -0.645     -0.239 0.00645   2.71 0.000185 
+##  4    52   306    51.7  0.323      0.120 0.00661   2.71 0.0000476
+##  5    48   304    51.6 -3.64      -1.35  0.00645   2.70 0.00593  
+##  6    50   305    51.7 -1.66      -0.616 0.00653   2.71 0.00125  
+##  7    53   305    51.7  1.34       0.497 0.00653   2.71 0.000810 
+##  8    53   306    51.7  1.32       0.491 0.00661   2.71 0.000800 
+##  9    53   305    51.7  1.34       0.497 0.00653   2.71 0.000810 
+## 10    50   306    51.7 -1.68      -0.622 0.00661   2.71 0.00129  
 ## # … with 485 more rows</code></pre>
 <pre class="r"><code># Plot
 augment(lm_time, se_fit = TRUE) %&gt;% 
@@ -353,7 +356,7 @@ ggplot(data=.) +
   geom_ribbon(aes(y=.fitted, ymin=lb, ymax=ub, x=days), alpha=.2) +
   geom_line(aes(y=.fitted, x=days), color=&quot;blue&quot;) +
   geom_point(aes(y = Vote, x=days), alpha=.2) </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 </div>
 </div>
 <div id="running-multiple-models" class="section level2">
@@ -369,62 +372,62 @@ nested_data &lt;- state_polls %&gt;%
                  nest()
 
 nested_data</code></pre>
-<pre><code>## # A tibble: 48 x 2
-## # Groups:   state [48]
+<pre><code>## # A tibble: 47 x 2
+## # Groups:   state [47]
 ##    state data               
 ##    &lt;chr&gt; &lt;list&gt;             
-##  1 WI    &lt;tibble [94 × 18]&gt; 
-##  2 PA    &lt;tibble [111 × 18]&gt;
-##  3 NC    &lt;tibble [103 × 18]&gt;
-##  4 MI    &lt;tibble [112 × 18]&gt;
-##  5 AZ    &lt;tibble [87 × 18]&gt; 
-##  6 FL    &lt;tibble [104 × 18]&gt;
-##  7 IA    &lt;tibble [31 × 18]&gt; 
-##  8 MN    &lt;tibble [34 × 18]&gt; 
-##  9 MS    &lt;tibble [7 × 18]&gt;  
-## 10 GA    &lt;tibble [58 × 18]&gt; 
-## # … with 38 more rows</code></pre>
+##  1 MT    &lt;tibble [18 × 18]&gt; 
+##  2 ME    &lt;tibble [19 × 18]&gt; 
+##  3 IA    &lt;tibble [32 × 18]&gt; 
+##  4 WI    &lt;tibble [95 × 18]&gt; 
+##  5 PA    &lt;tibble [112 × 18]&gt;
+##  6 NC    &lt;tibble [104 × 18]&gt;
+##  7 MI    &lt;tibble [112 × 18]&gt;
+##  8 FL    &lt;tibble [105 × 18]&gt;
+##  9 AZ    &lt;tibble [88 × 18]&gt; 
+## 10 MN    &lt;tibble [34 × 18]&gt; 
+## # … with 37 more rows</code></pre>
 <p>We have a data set with two collumns: the grouped variables and their corresponding data. The data column is called a <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html">list-column</a> because it works as a list where every element has a entire dataset. Since we have a list of datasets, we can use functional programming in purrr to run the same models for each of these datasets.</p>
 <pre class="r"><code>nested_data &lt;- nested_data %&gt;%
                 mutate(model=map(data, ~ lm(Vote~days, .x))) # .x represent the variable you are mapping
 
 nested_data</code></pre>
-<pre><code>## # A tibble: 48 x 3
-## # Groups:   state [48]
+<pre><code>## # A tibble: 47 x 3
+## # Groups:   state [47]
 ##    state data                model 
 ##    &lt;chr&gt; &lt;list&gt;              &lt;list&gt;
-##  1 WI    &lt;tibble [94 × 18]&gt;  &lt;lm&gt;  
-##  2 PA    &lt;tibble [111 × 18]&gt; &lt;lm&gt;  
-##  3 NC    &lt;tibble [103 × 18]&gt; &lt;lm&gt;  
-##  4 MI    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
-##  5 AZ    &lt;tibble [87 × 18]&gt;  &lt;lm&gt;  
-##  6 FL    &lt;tibble [104 × 18]&gt; &lt;lm&gt;  
-##  7 IA    &lt;tibble [31 × 18]&gt;  &lt;lm&gt;  
-##  8 MN    &lt;tibble [34 × 18]&gt;  &lt;lm&gt;  
-##  9 MS    &lt;tibble [7 × 18]&gt;   &lt;lm&gt;  
-## 10 GA    &lt;tibble [58 × 18]&gt;  &lt;lm&gt;  
-## # … with 38 more rows</code></pre>
+##  1 MT    &lt;tibble [18 × 18]&gt;  &lt;lm&gt;  
+##  2 ME    &lt;tibble [19 × 18]&gt;  &lt;lm&gt;  
+##  3 IA    &lt;tibble [32 × 18]&gt;  &lt;lm&gt;  
+##  4 WI    &lt;tibble [95 × 18]&gt;  &lt;lm&gt;  
+##  5 PA    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
+##  6 NC    &lt;tibble [104 × 18]&gt; &lt;lm&gt;  
+##  7 MI    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
+##  8 FL    &lt;tibble [105 × 18]&gt; &lt;lm&gt;  
+##  9 AZ    &lt;tibble [88 × 18]&gt;  &lt;lm&gt;  
+## 10 MN    &lt;tibble [34 × 18]&gt;  &lt;lm&gt;  
+## # … with 37 more rows</code></pre>
 <p>We have now a new list-column with all our models. Now, let’s use <code>broom</code> to get quantities of interest.</p>
 <pre class="r"><code>nested_data &lt;- nested_data %&gt;% 
                      mutate(results=map(model, tidy)) %&gt;%
                      unnest(results) # this is key! it expand your list column
 
 nested_data</code></pre>
-<pre><code>## # A tibble: 96 x 8
-## # Groups:   state [48]
+<pre><code>## # A tibble: 94 x 8
+## # Groups:   state [47]
 ##    state data            model  term      estimate std.error statistic   p.value
 ##    &lt;chr&gt; &lt;list&gt;          &lt;list&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 WI    &lt;tibble [94 × … &lt;lm&gt;   (Interce… 44.8       0.607       73.8  5.44e- 83
-##  2 WI    &lt;tibble [94 × … &lt;lm&gt;   days       0.0258    0.00297      8.68 1.49e- 13
-##  3 PA    &lt;tibble [111 ×… &lt;lm&gt;   (Interce… 46.4       0.488       95.0  6.62e-106
-##  4 PA    &lt;tibble [111 ×… &lt;lm&gt;   days       0.0173    0.00225      7.69 7.19e- 12
-##  5 NC    &lt;tibble [103 ×… &lt;lm&gt;   (Interce… 46.2       0.595       77.6  7.13e- 92
-##  6 NC    &lt;tibble [103 ×… &lt;lm&gt;   days       0.00865   0.00280      3.09 2.62e-  3
-##  7 MI    &lt;tibble [112 ×… &lt;lm&gt;   (Interce… 46.7       0.521       89.5  7.13e-104
-##  8 MI    &lt;tibble [112 ×… &lt;lm&gt;   days       0.0170    0.00259      6.58 1.67e-  9
-##  9 AZ    &lt;tibble [87 × … &lt;lm&gt;   (Interce… 46.4       0.657       70.6  3.01e- 77
-## 10 AZ    &lt;tibble [87 × … &lt;lm&gt;   days       0.00968   0.00309      3.14 2.36e-  3
-## # … with 86 more rows</code></pre>
+##  1 MT    &lt;tibble [18 × … &lt;lm&gt;   (Interce… 35.5       1.58       22.5   1.59e- 13
+##  2 MT    &lt;tibble [18 × … &lt;lm&gt;   days       0.0369    0.00725     5.09  1.09e-  4
+##  3 ME    &lt;tibble [19 × … &lt;lm&gt;   (Interce… 50.6       2.73       18.5   1.06e- 12
+##  4 ME    &lt;tibble [19 × … &lt;lm&gt;   days       0.00517   0.0127      0.407 6.89e-  1
+##  5 IA    &lt;tibble [32 × … &lt;lm&gt;   (Interce… 42.6       1.53       27.8   5.68e- 23
+##  6 IA    &lt;tibble [32 × … &lt;lm&gt;   days       0.0172    0.00690     2.50  1.81e-  2
+##  7 WI    &lt;tibble [95 × … &lt;lm&gt;   (Interce… 44.8       0.603      74.2   6.76e- 84
+##  8 WI    &lt;tibble [95 × … &lt;lm&gt;   days       0.0259    0.00294     8.83  6.60e- 14
+##  9 PA    &lt;tibble [112 ×… &lt;lm&gt;   (Interce… 46.4       0.486      95.4   7.18e-107
+## 10 PA    &lt;tibble [112 ×… &lt;lm&gt;   days       0.0172    0.00224     7.68  7.20e- 12
+## # … with 84 more rows</code></pre>
 <p>With the unnest, we have a beautiful tidy data set with our model parameters. More important, it is a single data frame with both informations: parameters and subgroups (states). Now, let’s plot:</p>
 <pre class="r"><code># first, remove the intercept
 to_plot &lt;- nested_data %&gt;%
@@ -439,103 +442,71 @@ ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
   coord_flip() +
   theme_minimal() +
   labs(x = &quot;Linear Time Trend by State&quot;,  y= &quot;Biden Support in the Polls&quot;)  </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 </div>
 <div id="case-study-partisanship-covid-and-risk-perceptions-in-brazil." class="section level2">
 <h2>Case Study: Partisanship, Covid and Risk Perceptions in Brazil.</h2>
-<p>To conclude our workshop, I will show you the code of a recent paper I wrote with Ernesto Calvo. The paper is forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses a variation of experimental and observational data. I will focus on the descriptive analysis and the simple regression models.
-The paper and replication files can be found <a href="https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021">here</a> on my github account.</p>
+<p>To conclude our workshop, I will show you the code my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses both experimental and observational data. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil. The paper and replication files can be found <a href="https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021">here</a> on my github account.</p>
 <div id="risk-perceptions-and-partisanship" class="section level3">
 <h3>Risk Perceptions and Partisanship</h3>
+<p>The plan is to estimate a model of partisanship on three different outcomes. Let’s see how we can do this with the tools we learned so far.</p>
+<div id="tidy-the-data" class="section level4">
+<h4>Tidy the data</h4>
 <pre class="r"><code>load(&quot;CV_data.Rdata&quot;)
-d</code></pre>
-<pre><code>## # A tibble: 2,362 x 29
-##    trust_exp runoff_bolsonaro runoff_haddad vote_haddad vote_bolsonaro
-##    &lt;chr&gt;     &lt;chr&gt;            &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;         
-##  1 treatment Off              On            Off         Off           
-##  2 treatment On               Off           Off         On            
-##  3 treatment Off              On            Off         Off           
-##  4 treatment Off              On            Off         Off           
-##  5 treatment On               Off           Off         On            
-##  6 treatment Off              Off           Off         Off           
-##  7 treatment Off              Off           Off         Off           
-##  8 treatment Off              Off           Off         Off           
-##  9 control   On               Off           Off         Off           
-## 10 control   On               Off           Off         On            
-## # … with 2,352 more rows, and 24 more variables: runoff_nulo &lt;chr&gt;,
-## #   ideo_place_self &lt;chr&gt;, positive_partisanship &lt;chr&gt;,
-## #   negative_partisanship &lt;chr&gt;, covid_job &lt;fct&gt;, covid_health &lt;fct&gt;,
-## #   covid_government &lt;fct&gt;, treat_reaction &lt;chr&gt;, treat_emotions &lt;chr&gt;,
-## #   income &lt;dbl&gt;, age &lt;fct&gt;, gender &lt;fct&gt;, work &lt;fct&gt;, education &lt;fct&gt;,
-## #   startdate &lt;date&gt;, enddate &lt;date&gt;, treat_reaction_page_submit &lt;dbl&gt;,
-## #   treat_negative &lt;dbl&gt;, treatment_haddad &lt;dbl&gt;, treatment_bolsonaro &lt;dbl&gt;,
-## #   negative_bolsonaro &lt;dbl&gt;, neutral_bolsonaro &lt;dbl&gt;, negative_haddad &lt;dbl&gt;,
-## #   neutral_haddad &lt;dbl&gt;</code></pre>
-<pre class="r"><code>load(&quot;/data/CV_data.Rdata&quot;)
+library(tidyverse)
+library(tidyr)
 
-outcomes_haddad &lt;- map_df(c(&quot;covid_government&quot;, &quot;covid_health&quot;, &quot;covid_job&quot;), ~ 
-                            lm(as.numeric(get(.x)) ~ runoff_haddad + 
+d_pivot &lt;- d %&gt;% 
+            pivot_longer(cols=c(covid_job, covid_health, covid_government), 
+                         names_to=&quot;covid&quot;, 
+                         values_to=&quot;covid_values&quot;) </code></pre>
+</div>
+<div id="nest-and-models" class="section level4">
+<h4>Nest and Models</h4>
+<pre class="r"><code>data_nested &lt;- d_pivot %&gt;%
+                group_by(covid) %&gt;%
+                nest() %&gt;%
+                mutate(model=map(data, ~ lm(as.numeric(covid_values) ~ 
+                                              runoff_haddad + 
+                                              runoff_bolsonaro + 
                                  income + gender + work + 
-                                 as.numeric(education) + age , data=d) %&gt;% 
-                            tidy(.) %&gt;% 
-                            mutate(outcome=.x, 
-                                   lb=estimate - 1.96*std.error, 
-                                   up= estimate + 1.96*std.error)) %&gt;% 
-  filter(!(term %in% c(&quot;(Intercept)&quot;))) %&gt;% 
-  mutate(label=paste0(&quot;Haddad   &quot;))
-
-
-outcomes_bolsonaro &lt;- map_df(c(&quot;covid_government&quot;, &quot;covid_health&quot;, &quot;covid_job&quot;), ~ 
-                               lm(as.numeric(get(.x)) ~ runoff_bolsonaro + 
-                                    income + gender + work + 
-                                    as.numeric(education) + age, data=d) %&gt;% 
-                               tidy(.) %&gt;% 
-                               mutate(outcome=.x, 
-                                      lb=estimate - 1.96*std.error, 
-                                      up= estimate + 1.96*std.error)) %&gt;% 
-  filter(!(term %in% c(&quot;(Intercept)&quot;))) %&gt;% 
-  mutate(label=paste0(&quot;Bolsonaro&quot;))
-
-
-
-
-
-outcomes_ind &lt;- map_df(c(&quot;covid_government&quot;, &quot;covid_health&quot;, &quot;covid_job&quot;), ~ 
-                         lm(as.numeric(get(.x)) ~ runoff_nulo + 
-                              income + gender + work +
-                              as.numeric(education) + age, data=d) %&gt;% 
-                         tidy(.) %&gt;% 
-                         mutate(outcome=.x, 
-                                lb=estimate - 1.96*std.error, 
-                                up= estimate + 1.96*std.error)) %&gt;% 
-  filter(!(term %in% c(&quot;(Intercept)&quot;))) %&gt;% 
-  mutate(label=paste0(&quot;Independents&quot;))
-
-
-outcomes &lt;- rbind(outcomes_haddad, outcomes_bolsonaro, outcomes_ind) %&gt;% 
-  mutate(outcome= ifelse(outcome==&quot;covid_job&quot;, 
+                                 as.numeric(education) + age , data=.x)),
+                      res=map(model,tidy)) %&gt;%
+                unnest(res) %&gt;%
+                mutate(lb=estimate - 1.96*std.error, 
+                       up= estimate + 1.96*std.error)</code></pre>
+<p>Everything we need is there. Now, I will just fix the labels. Get your labels correct before plotting. It is easier to do this in the data processing than inside of ggplot.</p>
+<pre class="r"><code>to_plot &lt;- data_nested %&gt;% 
+              filter(str_detect(term, &quot;runoff&quot;)) %&gt;%
+              mutate(labels_iv=fct_recode(term, &quot;Haddad Voters&quot;=&quot;runoff_haddadOn&quot;, 
+                                                &quot;Bolsonaro Voters&quot;=&quot;runoff_bolsonaroOn&quot;)) %&gt;%
+              mutate(outcome= ifelse(covid==&quot;covid_job&quot;, 
                          &quot;How likely is it that you \n could lose your job? &quot;,
-                         ifelse(outcome==&quot;covid_health&quot;, 
+                         ifelse(covid==&quot;covid_health&quot;, 
                                 &quot;How likely will your health \n be affected by COVID-19?&quot;, 
-                                &quot;Has the government response \n been appropriate ?&quot;))) 
+                                &quot;Has the government response \n been appropriate ?&quot;))) </code></pre>
+</div>
+</div>
+<div id="graph" class="section level3">
+<h3>Graph</h3>
+<pre class="r"><code>#pick my colors
+pal &lt;- RColorBrewer::brewer.pal(9, &quot;Spectral&quot;)
 
-outcomes_reduced &lt;- outcomes %&gt;% filter(str_detect(term, &quot;runoff&quot;))
-
-# Graph
-
-ggplot(outcomes_reduced, aes(y=estimate, x=label, 
-                             ymin=up, ymax=lb, color=label)) +
+#graph
+ggplot(to_plot, aes(y=estimate, x=labels_iv, 
+                      ymin=up, ymax=lb, color=labels_iv)) +
   geom_pointrange(shape=21, fill=&quot;white&quot;, size=2) +
   labs(x=&quot;&quot;, y=&quot;Point Estimates&quot;, 
        title = &quot;\nPartisanship, Risk Perceptions and Government Responses to Covid in Brazil&quot;, 
        subtitle = &quot;Regression Estimates with Controls by Income, Gender, Age, Education, and Occupation.&quot;, 
-       caption =&quot;Note: Positive point-estimates when respondents show greater support \n for the government, or higher risk of losing their jobs or being infected by COVID-19&quot;) +
+       caption =&quot;Note: Baseline are Independent Voters&quot;) +
   geom_hline(yintercept = 0, linetype=&quot;dashed&quot;, color=&quot;darkred&quot;) + 
-  scale_color_manual(values=c(&quot;Bolsonaro&quot;=pal[9], &quot;Haddad   &quot;=pal[1], 
-                              &quot;Independents&quot;=pal[4]), 
+  scale_color_manual(values=c(&quot;Bolsonaro Voters&quot;=pal[9], &quot;Haddad Voters&quot;=pal[1]),
                      name=&quot;Who would you vote for?&quot;) +
-  facet_wrap(~outcome) +
-  theme(plot.caption = element_text(size=12, family=my_font))</code></pre>
+  facet_wrap(~outcome)  + 
+  theme_bw() +
+  theme(strip.text = element_text(size=10))</code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 </div>
 </div>
