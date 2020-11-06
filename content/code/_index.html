@@ -11,11 +11,10 @@ output:
   <link rel="stylesheet" href="/style/style.css" type="text/css" />
 
 
-<pre class="r"><code>knitr::opts_chunk$set(message=FALSE, warning = FALSE)</code></pre>
 <p>As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers); just a few of your peers will know where to look at that table, while a nice graph can be quite intuitive to follow through.</p>
 <p>This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph.</p>
-<div id="main-goals" class="section level2">
-<h2>Main Goals</h2>
+<div id="main-goals" class="section level3">
+<h3>Main Goals</h3>
 <p>By the end of the workshop, I expect you to know how to:</p>
 <ul>
 <li>Prepare your data for easy visualization.</li>
@@ -23,8 +22,8 @@ output:
 <li>Use ggplot2 to build an informative visualization.</li>
 </ul>
 </div>
-<div id="how-to-get-there" class="section level2">
-<h2>How to get there?</h2>
+<div id="how-to-get-there" class="section level3">
+<h3>How to get there?</h3>
 <ul>
 <li>Basics of ggplot</li>
 <li>Tidy Data with TidyR</li>
@@ -34,8 +33,8 @@ output:
 </div>
 <div id="basics-of-ggplot2" class="section level1">
 <h1>Basics of ggplot2</h1>
-<div id="what-do-you-see" class="section level2">
-<h2>What do you see?</h2>
+<div id="what-do-you-see" class="section level3">
+<h3>What do you see?</h3>
 <ul>
 <li><p>How many variables?</p></li>
 <li><p>How many different Aesthetics?</p></li>
@@ -43,11 +42,11 @@ output:
 </ul>
 <p><img src="/images/res_no_band.png" /></p>
 </div>
-<div id="how-ggplot-works" class="section level2">
-<h2>How ggplot works</h2>
+<div id="how-ggplot-works" class="section level3">
+<h3>How ggplot works</h3>
 <p>Data Visualization involves connecting (mapping) variables on your data to graphical representations. Ggplot provides you with a language to map data and to a plot.</p>
 <p>Ggplot is based on the <a href="https://www.springer.com/gp/book/9780387245447">Grammar of Graphics</a>. In summary, ggplot works by connecting data and visual components through a function called <strong>aesthethics mapping</strong> (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from <a href="https://socviz.co/makeplot.html#makeplot">Kieran Healy</a> summarizes well the logic:</p>
-<p><img src="/images/ggplot_flow.png" style="width:50.0%" /></p>
+<p><img src="/images/ggplot_flow.png" style="width:30.0%" /></p>
 </div>
 <div id="part-1tidy-your-data" class="section level2">
 <h2>Part 1:Tidy your data</h2>
@@ -87,7 +86,7 @@ output:
 <pre class="r"><code>data &lt;- read_csv(&quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18Lipu1_i3ID9JE06voJEz2EXm6JW4Vh11zmndyTwejMavuNntzIWLY0RyhA1UsVEen0/pub?gid=0&amp;single=true&amp;output=csv&quot;)</code></pre>
 </div>
 <div id="is-this-data-tidy" class="section level3 alert">
-<h3>Is this data tidy ?</h3>
+<h3>Is this data tidy?</h3>
 <pre class="r"><code>glimpse(data)</code></pre>
 <pre><code>## Rows: 1,614
 ## Columns: 17
@@ -144,21 +143,20 @@ swing_states &lt;- c(&quot;PA&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;AZ&qu
 geom_point()</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Bit of a mess. But we will make it prettier.</p>
-</div>
-<div id="which-aesthetics-i-can-use" class="section level2">
-<h2>Which Aesthetics I can use?</h2>
+<div id="which-aesthetics-i-can-use" class="section level3">
+<h3>Which Aesthetics I can use?</h3>
 <p><img src="/images/aes.png" /></p>
 </div>
-<div id="some-aesthethics-examples" class="section level2">
-<h2>Some Aesthethics Examples</h2>
-<div id="color" class="section level3">
-<h3>Color</h3>
+<div id="some-aesthethics-examples" class="section level3">
+<h3>Some Aesthethics Examples</h3>
+<div id="color" class="section level4">
+<h4>Color</h4>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote, 
            color=Vote_Choice)) + # the map step
 geom_point()</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
-### Shape</p>
+#### Shape</p>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
            color=Vote_Choice,
@@ -167,18 +165,18 @@ geom_point() </code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 </div>
-<div id="some-geom-examples" class="section level2">
-<h2>Some Geom Examples</h2>
-<div id="smooting-the-data" class="section level3">
-<h3>Smooting the data</h3>
+<div id="some-geom-examples" class="section level3">
+<h3>Some Geom Examples</h3>
+<div id="smooting-the-data" class="section level4">
+<h4>Smooting the data</h4>
 <pre class="r"><code>ggplot(data=national_polls,
        aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
 geom_point(alpha=.2) +
 geom_smooth()</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
-<div id="showing-some-density" class="section level3">
-<h3>Showing some density</h3>
+<div id="showing-some-density" class="section level4">
+<h4>Showing some density</h4>
 <pre class="r"><code>ggplot(data=national_polls,
        aes(x=end.date)) +
 geom_density(fill=&quot;steelblue&quot;)</code></pre>
@@ -189,16 +187,16 @@ ggplot(data=state_polls %&gt;% filter(state%in%swing_states)) +
   facet_wrap(~state, ncol=3)</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 </div>
-<div id="bars" class="section level3">
-<h3>Bars</h3>
+<div id="bars" class="section level4">
+<h4>Bars</h4>
 <pre class="r"><code>ggplot(data=data_long,
        aes(x=end.date, fill=mode)) +
 geom_bar() +
 scale_fill_brewer(palette = &quot;Set3&quot;)</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
-<div id="box-plot" class="section level3">
-<h3>Box Plot</h3>
+<div id="box-plot" class="section level4">
+<h4>Box Plot</h4>
 <pre class="r"><code># Another example
 ggplot(state_polls %&gt;% filter(state%in%swing_states),
        aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
@@ -208,8 +206,8 @@ ggplot(state_polls %&gt;% filter(state%in%swing_states),
 <p>A full set of geoms can be found <a href="http://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">here</a></p>
 </div>
 </div>
-<div id="part-4-adjust-scales-labels-titles-and-more." class="section level2">
-<h2>Part 4: Adjust scales, labels, titles, and more.</h2>
+<div id="part-4-adjust-scales-labels-titles-and-more." class="section level3">
+<h3>Part 4: Adjust scales, labels, titles, and more.</h3>
 <p>After you are set on the mapping and geoms, the next step is to adjust the scale of your the graph. These functions are usually on the form: <code>scale_aesthethic_type</code>. These functions usually change how the aesthethics are presented. For exemple:</p>
 <ul>
 <li><code>scale_x_log10</code>: To convert the numeric axis to the log scale</li>
@@ -233,6 +231,7 @@ labs(x = &quot;End of the Poll&quot;, y = &quot;Results&quot;,
          caption = &quot;Source: The Economist&quot;)  
 p</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
 </div>
 <div id="embellishment-as-an-consistent-workflow" class="section level2">
 <h2>Embellishment as an consistent workflow</h2>
@@ -505,7 +504,8 @@ ggplot(to_plot, aes(y=estimate, x=labels_iv,
                      name=&quot;Who would you vote for?&quot;) +
   facet_wrap(~outcome)  + 
   theme_bw() +
-  theme(strip.text = element_text(size=10))</code></pre>
+  theme(strip.text = element_text(size=7),
+        axis.text.x = element_blank()) </code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 </div>

@@ -1,9 +1,12 @@
 main:
-  - name: Code
+  - name: Workshop
     url: /code/
     weight: 1
+  - name: Materials
+    url: /materials/
+    weight: 2
   - name: References
     url: /reference/
-    weight: 2
+    weight: 3
 #  - name: Schedule
 #    url: /schedule/

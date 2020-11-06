@@ -1,0 +1,520 @@
+---
+title: Data Visualization in R
+slug: code
+output:
+  blogdown::html_page:
+    css: /style/style.css
+    toc: false
+---
+```{r echo=TRUE, include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning = FALSE)
+```
+
+As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers); just a few of your peers will know where to look at that table, while a nice graph can be quite intuitive to follow through. 
+
+This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph. 
+
+### Main Goals
+
+By the end of the workshop, I expect you to know how to:
+
+- Prepare your data for easy visualization. 
+- Run and extract information from statistical models.
+- Use ggplot2 to build an informative visualization. 
+
+### How to get there?
+
+- Basics of ggplot
+- Tidy Data with TidyR
+- Broom for Model Quantities
+- Case studies (from my own work)
+
+# Basics of ggplot2
+
+### What do you see? 
+
+- How many variables?
+
+- How many different Aesthetics?
+
+- What else?
+
+![](/images/res_no_band.png)
+
+### How ggplot works
+
+Data Visualization involves connecting (mapping) variables on your data to graphical representations. Ggplot provides you with a language to map data and to a plot. 
+
+Ggplot is based on the [Grammar of Graphics](https://www.springer.com/gp/book/9780387245447). In summary, ggplot works by connecting data and visual components through a function called __aesthethics mapping__ (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from [Kieran Healy](https://socviz.co/makeplot.html#makeplot) summarizes well the logic:
+
+![](/images/ggplot_flow.png){ width=30% }
+
+## Part 1:Tidy your data
+
+Understanding what a **tidy data** entails is key to use ggplot. I cannot emphasize this enough, but getting you data ready (and by ready I mean tidy and with the proper labels) is 80% of the gpplot work. Most of the times some friends ask me for help with a graph, the solution is the pre-processing, and not in the plotting part of their codes. 
+
+
+### Starting some coding
+
+Let's first call our packages. I am using the package [packman](http://trinker.github.io/pacman/vignettes/Introduction_to_pacman.html) to help me manage my libraries.
+
+```{r call packages}
+pacman::p_load(tidyverse, gapminder, kableExtra, tidyr, ggthemes, patchwork, broom)
+```
+
+This is a tidy data:
+
+```{r}
+gapminder
+```
+
+
+There are three interrelated rules which make a [dataset tidy](https://r4ds.had.co.nz/tidy-data.html). 
+
+- Each variable must have its own column.
+- Each observation must have its own row.
+- Each value must have its own cell.
+
+![](/images/tidy-1.png){ width=80% }
+
+Why is it important to have a tidy dataset? A more general answer is that to map a variable to a plot, you need this variables to be defined as an single column. A more practical answer is that all the tidyverse packages (dplyr, purrr, tidyr, ggplot...) work with tidy data. 
+
+### Getting our own data
+
+Throughout this workshop, we will work with the pooling data for the last Presidential Election in the US aggregated by The Economist. Let's download the data:
+
+```{r}
+data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18Lipu1_i3ID9JE06voJEz2EXm6JW4Vh11zmndyTwejMavuNntzIWLY0RyhA1UsVEen0/pub?gid=0&single=true&output=csv")
+```
+
+
+### Is this data tidy? {.alert}
+
+```{r}
+glimpse(data)
+```
+
+
+### Pivoting to make the data tidy (Pivot Longer)
+
+Our main variables of interest are in the wide format (Trump and Biden's Polls Results). This is wide dataset because we are spreading the variable vote choice is spread among two columns. To make it a long data set, we will use the function `pivot_longer` from the `tidyr` package. 
+
+```{r}
+data_long <- data %>% 
+  pivot_longer(cols=c(biden,trump), 
+               names_to="Vote_Choice", 
+               values_to="Vote") %>%
+  mutate(end.date=as.Date(str_replace_all(end.date, "/", "-"), format = "%m-%d-%Y"))
+
+national_polls <- data_long %>% filter(state=="--")
+state_polls <- data_long %>% filter(state!="--")
+swing_states <- c("PA", "FL", "GA", "AZ", "IO", "OH", "TX", "MI", "WI")
+
+```
+
+We have three inputs here: 
+
+- `cols`: the variables you want to convert from wide to long.
+- `names_to`: new variable for the columns names from the wide data.
+- `values_to`: new variable for the values from the wide data. 
+
+With this tidy dataset, we can start our visualization. 
+
+## Part 2: Linking the Data to Visuals (Mapping).
+
+Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
+
+1. **The Data Step**: Tell ggplot what your data is. 
+
+2. **The Mapping Step**: Tell ggplot **what** variables -> visuals you want to see.
+
+3. **The Geom Step**: Tell ggplot **how** you want to see
+
+Let's plot all the polls over time using a scatter plot
+
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote)) + # the map step
+geom_point()
+```
+
+
+Bit of a mess. But we will make it prettier. 
+
+### Which Aesthetics I can use?
+
+![](/images/aes.png)
+
+### Some Aesthethics Examples
+
+#### Color
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote, 
+           color=Vote_Choice)) + # the map step
+geom_point()
+
+```
+#### Shape
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           shape=Vote_Choice)) + # the map step
+geom_point() 
+```
+
+### Some Geom Examples
+
+#### Smooting the data
+
+```{r}
+ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth()
+```
+
+#### Showing some density
+
+```{r}
+ggplot(data=national_polls,
+       aes(x=end.date)) +
+geom_density(fill="steelblue")
+
+# ANother one
+ggplot(data=state_polls %>% filter(state%in%swing_states)) +
+  geom_density(aes(x=end.date, fill=state), alpha=.3) +
+  facet_wrap(~state, ncol=3)
+
+```
+
+#### Bars
+
+```{r}
+ggplot(data=data_long,
+       aes(x=end.date, fill=mode)) +
+geom_bar() +
+scale_fill_brewer(palette = "Set3")
+```
+
+
+
+#### Box Plot 
+
+
+```{r}
+# Another example
+ggplot(state_polls %>% filter(state%in%swing_states),
+       aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c("biden"="blue","trump"="red")) 
+
+```
+
+A full set of geoms can be found [here](http://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf)
+
+### Part 4: Adjust scales, labels,  titles, and more.
+
+After you are set on the mapping and geoms, the next step is to adjust the scale of your the graph. These functions are usually on the form: `scale_aesthethic_type`. These functions usually change how the aesthethics are presented. For exemple:
+
+- `scale_x_log10`: To convert the numeric axis to the log scale
+- `scale_y_reverse`: To reverse the scale
+- `scale_fill_manual`: To create your own discrete set of fill. 
+- `scale_colour_brewer()`: Change the Pallet of Colours
+
+
+```{r}
+
+p <- ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, shape=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth() +
+scale_shape_manual(values =c(21, 23)) +
+scale_fill_manual(values=c("red", "blue")) +
+scale_color_manual(values=c("red", "blue"), , labels=c("Biden", "Trump"), 
+                  name= "Vote Choice") +
+scale_x_date(date_breaks = "1 month", date_labels = "%b %d") +
+guides(fill=FALSE, shape=FALSE) +
+labs(x = "End of the Poll", y = "Results",
+         title = "Polls US Presidential Election",
+         subtitle = "",
+         caption = "Source: The Economist")  
+p
+```
+
+
+## Embellishment as an consistent workflow
+
+Most of the adjustments you can make on your plot go inside of the `theme` function. When working on a paper, it is important that your graphs are consistent, and that you add this consistency to your workflow. My suggested approach for this is to create a theme for my graphs, and use the same theme throughout all the plots of the same project. An example below:
+
+```{r}
+# Set up my theme  ------------------------------------------------------------
+my_font <- "Palatino Linotype"
+my_bkgd <- "#f5f5f2"
+pal <- RColorBrewer::brewer.pal(9, "Spectral")
+
+
+my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
+                  rect = element_rect(fill = my_bkgd),
+                  plot.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.background = element_rect(fill = my_bkgd, color = NA),
+                  panel.border = element_rect(color="black"), 
+                  strip.background = element_rect(color="black", fill="gray85"), 
+                  legend.background = element_rect(fill = my_bkgd, color = NA),
+                  legend.key = element_rect(size = 6, fill = "white", colour = NA), 
+                  legend.key.size = unit(1, "cm"),
+                  legend.text = element_text(size = 14, family = my_font),
+                  legend.title = element_text(size=14),
+                  plot.title = element_text(size = 22, face = "bold", family=my_font),
+                  plot.subtitle = element_text(size=16, family=my_font),
+                  axis.title= element_text(size=22),
+                  
+                  axis.text = element_text(size=14, family=my_font),
+                  axis.title.x = element_text(hjust=1),
+                  strip.text = element_text(family = my_font, color = "#22211d",
+                                            size = 13, face="italic"))
+
+```
+
+
+
+
+The last function sets your R environment to use your newly created theme in all your plots. Lets see this in our old graph:
+
+```{r eval=FALSE}
+# This sets up for all your plots
+theme_set(theme_bw() + my_theme)
+
+```
+
+Or you can do by hand
+```{r}
+p +
+  theme_base() +
+  my_theme
+
+```
+
+Another option is to use one of the pre-set themes in R
+
+```{r}
+library(ggthemes)
+library(hrbrthemes)
+ p + 
+  theme_minimal()
+ p + 
+  theme_economist()
+p + 
+  theme_fivethirtyeight()
+p + 
+  theme_ipsum()
+
+```
+
+## Modelling with Broom
+
+So far, we have discussed how to go from your raw data to informative visualization plots. For this, I assert having your data tidy is a key step to build your visualizations. From this section forward, we will use the same logic to go from your statistical models outputs to plots. We will use David Robinson’s `broom` package to help us out, and the tidyverse package `purrr`. 
+
+### A single model
+
+Let's start with a simple and silly model. We will estimate how Biden results improved over time.  
+
+```{r}
+# Separate the data
+biden <- national_polls %>%
+      filter(Vote_Choice=="biden") %>%
+      mutate(first_day=min(end.date, na.rm=TRUE), 
+             days=as.numeric(end.date-first_day))
+
+
+# simple linear model
+
+lm_time <- lm(Vote~ days, data=biden)
+
+```
+
+With this model, most of us learned to extract quantities using functions likes `coef`, `predict`, `summary`, among others. A better approach is to use the functions from the broom package. We have three options: 
+
+- `tidy`: to extract the model main parameters
+- `augment`: to extract observation-level statistics (predictions)
+- `glance`: to extract model-level statistics. 
+
+### Extract Quantities
+```{r}
+# a data frame
+results <- tidy(lm_time)
+results
+```
+### Plot
+
+Not a nice plot, but just an example. 
+```{r}
+results %>% 
+  mutate(lb=estimate - 1.96*std.error, 
+         up=estimate+ 1.96*std.error) %>%
+  ggplot(data=., aes(y=estimate, ymin=lb, ymax=up, x=term)) +
+  geom_pointrange() +
+  coord_flip()
+```
+
+### Predicted Values with Augment
+
+```{r}
+augment(lm_time)
+
+# Plot
+augment(lm_time, se_fit = TRUE) %>% 
+  mutate(lb=.fitted - 1.96*.se.fit, 
+         ub=.fitted + 1.96*.se.fit) %>%
+ggplot(data=.) +
+  geom_ribbon(aes(y=.fitted, ymin=lb, ymax=ub, x=days), alpha=.2) +
+  geom_line(aes(y=.fitted, x=days), color="blue") +
+  geom_point(aes(y = Vote, x=days), alpha=.2) 
+
+```
+
+## Running Multiple Models
+
+What if I want to run the same model for multiple subgroups? Or multiple different models? Here is where I think some features of the tidyverse world, particularly `purrr` for functional programming, gets really beautiful. The logic is simple. We will nest our data, run models in the subgroups, tidy the results, and unnest everything in a tidy format dataset.
+
+Let's see the Biden time trend in a few selected swing states
+
+```{r}
+# Step 1: Nest your data
+nested_data <- state_polls %>%
+                 filter(Vote_Choice=="biden") %>%
+                 mutate(first_day=min(end.date, na.rm=TRUE), 
+                         days=as.numeric(end.date-first_day)) %>%
+                 group_by(state) %>%
+                 nest()
+
+nested_data
+```
+
+We have a data set with two collumns: the grouped variables and their corresponding data. The data column is called a [list-column](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) because it works as a list where every element has a entire dataset. Since we have a list of datasets, we can use functional programming in purrr to run the same models for each of these datasets. 
+
+```{r}
+
+nested_data <- nested_data %>%
+                mutate(model=map(data, ~ lm(Vote~days, .x))) # .x represent the variable you are mapping
+
+nested_data
+```
+
+We have now a new list-column with all our models. Now, let's use `broom` to get quantities of interest. 
+
+```{r}
+nested_data <- nested_data %>% 
+                     mutate(results=map(model, tidy)) %>%
+                     unnest(results) # this is key! it expand your list column
+
+nested_data
+```
+
+With the unnest, we have a beautiful tidy data set with our model parameters. More important, it is a single data frame with both informations: parameters and subgroups (states). Now, let's plot:
+
+```{r}
+
+# first, remove the intercept
+to_plot <- nested_data %>%
+              filter(term!="(Intercept)") %>%
+              mutate(ub=estimate+1.96*std.error, 
+                     lb=estimate-1.96*std.error)  %>%
+              drop_na()
+# graph
+ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
+  geom_pointrange(shape=21, fill="tomato2", color="black", alpha=.8) +
+  geom_hline(yintercept = 0, linetype="dashed", color="gray") +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "Linear Time Trend by State",  y= "Biden Support in the Polls")  
+
+```
+
+## Case Study: Partisanship, Covid and Risk Perceptions in Brazil. 
+
+To conclude our workshop, I will show you the code my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses both experimental and observational data. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil. The paper and replication files can be found [here](https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021) on my github account. 
+
+
+### Risk Perceptions and Partisanship
+
+The plan is to estimate a model of partisanship on three different outcomes. Let's see how we can do this with the tools we learned so far.
+
+
+
+#### Tidy the data
+
+```{r}
+load("CV_data.Rdata")
+library(tidyverse)
+library(tidyr)
+
+d_pivot <- d %>% 
+            pivot_longer(cols=c(covid_job, covid_health, covid_government), 
+                         names_to="covid", 
+                         values_to="covid_values") 
+
+```
+
+
+#### Nest and Models
+
+```{r}
+data_nested <- d_pivot %>%
+                group_by(covid) %>%
+                nest() %>%
+                mutate(model=map(data, ~ lm(as.numeric(covid_values) ~ 
+                                              runoff_haddad + 
+                                              runoff_bolsonaro + 
+                                 income + gender + work + 
+                                 as.numeric(education) + age , data=.x)),
+                      res=map(model,tidy)) %>%
+                unnest(res) %>%
+                mutate(lb=estimate - 1.96*std.error, 
+                       up= estimate + 1.96*std.error)
+```
+
+Everything we need is there. Now, I will just fix the labels. Get your labels correct before plotting. It is easier to do this in the data processing than inside of ggplot. 
+
+```{r}
+
+to_plot <- data_nested %>% 
+              filter(str_detect(term, "runoff")) %>%
+              mutate(labels_iv=fct_recode(term, "Haddad Voters"="runoff_haddadOn", 
+                                                "Bolsonaro Voters"="runoff_bolsonaroOn")) %>%
+              mutate(outcome= ifelse(covid=="covid_job", 
+                         "How likely is it that you \n could lose your job? ",
+                         ifelse(covid=="covid_health", 
+                                "How likely will your health \n be affected by COVID-19?", 
+                                "Has the government response \n been appropriate ?"))) 
+
+```
+
+### Graph
+```{r}
+#pick my colors
+pal <- RColorBrewer::brewer.pal(9, "Spectral")
+
+#graph
+ggplot(to_plot, aes(y=estimate, x=labels_iv, 
+                      ymin=up, ymax=lb, color=labels_iv)) +
+  geom_pointrange(shape=21, fill="white", size=2) +
+  labs(x="", y="Point Estimates", 
+       title = "\nPartisanship, Risk Perceptions and Government Responses to Covid in Brazil", 
+       subtitle = "Regression Estimates with Controls by Income, Gender, Age, Education, and Occupation.", 
+       caption ="Note: Baseline are Independent Voters") +
+  geom_hline(yintercept = 0, linetype="dashed", color="darkred") + 
+  scale_color_manual(values=c("Bolsonaro Voters"=pal[9], "Haddad Voters"=pal[1]),
+                     name="Who would you vote for?") +
+  facet_wrap(~outcome)  + 
+  theme_bw() +
+  theme(strip.text = element_text(size=7),
+        axis.text.x = element_blank()) 
+        
+
+```
+

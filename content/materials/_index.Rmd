@@ -1,0 +1,17 @@
+---
+title: Materials
+slug: materials
+output:
+  blogdown::html_page
+---
+
+You can download here all the materials used in the workshop. 
+
+[Rmarkdown for the Workshop](/code/datavix_workshop.rmd)
+
+[Slides]()
+
+[Data for Calvo and Ventura, LAPS 2020](/data/CV_data.Rdata)
+
+
+You can also download the complete repository for generating this [website](https://github.com/TiagoVentura/data_viz_umd_workshop) 
