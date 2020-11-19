@@ -1,4 +1,4 @@
-baseurl: /
+baseurl: http://datavizgvpt.tiagoventura.rbind.io/
 defaultContentLanguage: en
 title: "Data Visualization (GVPT Workshop)"
 theme: hugo-academic
