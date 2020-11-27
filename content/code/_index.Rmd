@@ -306,9 +306,9 @@ my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
                   legend.title = element_text(size=14),
                   plot.title = element_text(size = 22, face = "bold", family=my_font),
                   plot.subtitle = element_text(size=16, family=my_font),
-                  axis.title= element_text(size=14),
+                  axis.title= element_text(size=10),
                   
-                  axis.text = element_text(size=12, family=my_font),
+                  axis.text = element_text(size=10, family=my_font),
                   axis.title.x = element_text(hjust=1),
                   strip.text = element_text(family = my_font, color = "#22211d",
                                             size = 10, face="italic"))
@@ -327,6 +327,7 @@ theme_set(theme_bw() + my_theme)
 Or you can do by hand
 ```{r}
 p +
+  theme_bw() +
   my_theme
 
 ```

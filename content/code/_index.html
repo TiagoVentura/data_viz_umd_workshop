@@ -294,9 +294,9 @@ my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d
                   legend.title = element_text(size=14),
                   plot.title = element_text(size = 22, face = &quot;bold&quot;, family=my_font),
                   plot.subtitle = element_text(size=16, family=my_font),
-                  axis.title= element_text(size=14),
+                  axis.title= element_text(size=10),
                   
-                  axis.text = element_text(size=12, family=my_font),
+                  axis.text = element_text(size=10, family=my_font),
                   axis.title.x = element_text(hjust=1),
                   strip.text = element_text(family = my_font, color = &quot;#22211d&quot;,
                                             size = 10, face=&quot;italic&quot;))</code></pre>
@@ -305,6 +305,7 @@ my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d
 theme_set(theme_bw() + my_theme)</code></pre>
 <p>Or you can do by hand</p>
 <pre class="r"><code>p +
+  theme_bw() +
   my_theme</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>Another option is to use one of the pre-set themes in R</p>
