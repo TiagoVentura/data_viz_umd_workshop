@@ -196,7 +196,6 @@ geom_point()
 ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
            color=Vote_Choice,
-           shape=Vote_Choice, 
            alpha=end.date, 
            linetype=Vote_Choice)) + # the map step
 geom_smooth()
@@ -294,8 +293,6 @@ Most of the adjustments you can make on your plot go inside of the `theme` funct
 my_font <- "Palatino Linotype"
 my_bkgd <- "#f5f5f2"
 pal <- RColorBrewer::brewer.pal(9, "Spectral")
-
-
 my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
                   rect = element_rect(fill = my_bkgd),
                   plot.background = element_rect(fill = my_bkgd, color = NA),
@@ -319,9 +316,7 @@ my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
 ```
 
 
-
-
-The last function sets your R environment to use your newly created theme in all your plots. Lets see this in our old graph:
+Then you can set your R environment to use your newly created theme in all your plots. 
 
 ```{r eval=FALSE}
 # This sets up for all your plots
@@ -332,7 +327,6 @@ theme_set(theme_bw() + my_theme)
 Or you can do by hand
 ```{r}
 p +
-  theme_base() +
   my_theme
 
 ```

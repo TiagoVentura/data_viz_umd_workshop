@@ -9,7 +9,7 @@ title: Data Visualization
 
 # Hero image (optional). Enter filename of an image in the `static/media/` folder.
 
-hero_media: dataviz_hires.png
+hero_media: data_viz_hero.png
 
 design:
   background:

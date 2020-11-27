@@ -1,13 +1,4 @@
----
-title: Data Visualization in R
-slug: code
-output:
-  blogdown::html_page:
-    css: /style/style.css
-    toc: false
----
-
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="_index_files/header-attrs-2.3/header-attrs.js"></script>
   <link rel="stylesheet" href="/style/style.css" type="text/css" />
 
 
@@ -160,7 +151,7 @@ swing_states &lt;- c(&quot;PA&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;AZ&qu
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote)) + # the map step
 geom_point()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Bit of a mess. But we will make it prettier.</p>
 <div id="which-aesthetics-i-can-use" class="section level3">
 <h3>Which Aesthetics I can use?</h3>
@@ -174,7 +165,7 @@ geom_point()</code></pre>
        aes(x=end.date, y=Vote, 
            color=Vote_Choice)) + # the map step
 geom_point()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 </div>
 <div id="shape" class="section level3">
@@ -184,7 +175,7 @@ geom_point()</code></pre>
            color=Vote_Choice,
            shape=Vote_Choice)) + # the map step
 geom_point() </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <div id="alpha" class="section level4">
 <h4>Alpha</h4>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
@@ -193,16 +184,15 @@ geom_point() </code></pre>
            shape=Vote_Choice, 
            alpha=end.date)) + # the map step
 geom_point() </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<p><img src="_index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 #### Linetype</p>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
            color=Vote_Choice,
-           shape=Vote_Choice, 
            alpha=end.date, 
            linetype=Vote_Choice)) + # the map step
 geom_smooth()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Infinite possibilities to show variations on your dataset and maps your variables to visuals. We will go over some examples of more complete visualizations. Now let’s see some examples of <code>geoms</code> you might consider.</p>
 </div>
 </div>
@@ -214,19 +204,19 @@ geom_smooth()</code></pre>
        aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
 geom_point(alpha=.2) +
 geom_smooth()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="showing-some-density" class="section level4">
 <h4>Showing some density</h4>
 <pre class="r"><code>ggplot(data=national_polls,
        aes(x=end.date)) +
 geom_density(fill=&quot;steelblue&quot;)</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Another one using the facet_wrap
 ggplot(data=state_polls %&gt;% filter(state%in%swing_states)) +
   geom_density(aes(x=end.date, fill=state), alpha=.3) +
   facet_wrap(~state, ncol=3)</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
 </div>
 <div id="bars" class="section level4">
 <h4>Bars</h4>
@@ -234,7 +224,7 @@ ggplot(data=state_polls %&gt;% filter(state%in%swing_states)) +
        aes(x=end.date, fill=mode)) +
 geom_bar() +
 scale_fill_brewer(palette = &quot;Set3&quot;)</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="box-plot" class="section level4">
 <h4>Box Plot</h4>
@@ -243,7 +233,7 @@ ggplot(state_polls %&gt;% filter(state%in%swing_states),
        aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
   geom_boxplot() +
   scale_fill_manual(values=c(&quot;biden&quot;=&quot;blue&quot;,&quot;trump&quot;=&quot;red&quot;)) </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>A full set of geoms can be found <a href="http://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">here</a></p>
 </div>
 </div>
@@ -272,7 +262,7 @@ labs(x = &quot;End of the Poll&quot;, y = &quot;Results&quot;,
          subtitle = &quot;&quot;,
          caption = &quot;Source: The Economist&quot;)  
 p</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 </div>
 </div>
 <div id="embellishment-as-an-consistent-workflow" class="section level2">
@@ -282,8 +272,6 @@ p</code></pre>
 my_font &lt;- &quot;Palatino Linotype&quot;
 my_bkgd &lt;- &quot;#f5f5f2&quot;
 pal &lt;- RColorBrewer::brewer.pal(9, &quot;Spectral&quot;)
-
-
 my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d&quot;),
                   rect = element_rect(fill = my_bkgd),
                   plot.background = element_rect(fill = my_bkgd, color = NA),
@@ -303,29 +291,28 @@ my_theme &lt;- theme(text = element_text(family = my_font, color = &quot;#22211d
                   axis.title.x = element_text(hjust=1),
                   strip.text = element_text(family = my_font, color = &quot;#22211d&quot;,
                                             size = 10, face=&quot;italic&quot;))</code></pre>
-<p>The last function sets your R environment to use your newly created theme in all your plots. Lets see this in our old graph:</p>
+<p>Then you can set your R environment to use your newly created theme in all your plots.</p>
 <pre class="r"><code># This sets up for all your plots
 theme_set(theme_bw() + my_theme)</code></pre>
 <p>Or you can do by hand</p>
 <pre class="r"><code>p +
-  theme_base() +
   my_theme</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>Another option is to use one of the pre-set themes in R</p>
 <pre class="r"><code>library(ggthemes)
 library(hrbrthemes)
  p + 
   theme_minimal()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <pre class="r"><code> p + 
   theme_economist()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-21-2.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-21-2.png" width="672" /></p>
 <pre class="r"><code>p + 
   theme_fivethirtyeight()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-21-3.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-21-3.png" width="672" /></p>
 <pre class="r"><code>p + 
   theme_ipsum()</code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-21-4.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-21-4.png" width="672" /></p>
 </div>
 <div id="modelling-with-broom" class="section level2">
 <h2>Modelling with Broom</h2>
@@ -387,7 +374,7 @@ ggplot(data=.) +
   geom_ribbon(aes(y=.fitted, ymin=lb, ymax=ub, x=days), alpha=.2) +
   geom_line(aes(y=.fitted, x=days), color=&quot;blue&quot;) +
   geom_point(aes(y = Vote, x=days), alpha=.2) </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 </div>
 <div id="running-multiple-models" class="section level2">
@@ -473,7 +460,7 @@ ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
   coord_flip() +
   theme_minimal() +
   labs(x = &quot;Linear Time Trend by State&quot;,  y= &quot;Biden Support in the Polls&quot;)  </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
 <div id="case-study-partisanship-covid-and-risk-perceptions-in-brazil." class="section level2">
 <h2>Case Study: Partisanship, Covid and Risk Perceptions in Brazil.</h2>
@@ -538,7 +525,7 @@ ggplot(to_plot, aes(y=estimate, x=labels_iv,
   theme_bw() +
   theme(strip.text = element_text(size=7),
         axis.text.x = element_blank()) </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="_index_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 </div>
 </div>
 </div>

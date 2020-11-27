@@ -7,9 +7,9 @@ output:
 
 You can download here all the materials used in the workshop. 
 
-[Rmarkdown for the Workshop](/code/datavix_workshop.rmd)
+[Rmarkdown for the Workshop](/code/dataviz_workshop.rmd)
 
-[Slides]()
+[Slides](/code/slides.html)
 
 [Data for Calvo and Ventura, LAPS 2020](/data/CV_data.Rdata)
 

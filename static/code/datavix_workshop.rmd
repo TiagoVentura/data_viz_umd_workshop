@@ -95,6 +95,7 @@ glimpse(data)
 ```
 
 
+
 ### Pivoting to make the data tidy (Pivot Longer)
 
 Our main variables of interest are in the wide format (Trump and Biden's Polls Results). This is wide dataset because we are spreading the variable vote choice is spread among two columns. To make it a long data set, we will use the function `pivot_longer` from the `tidyr` package. 
@@ -106,13 +107,22 @@ data_long <- data %>%
                values_to="Vote") %>%
   mutate(end.date=as.Date(str_replace_all(end.date, "/", "-"), format = "%m-%d-%Y"))
 
+```
+
+And now: 
+```{r}
+data_long
+```
+
+Let's now separate the data for our later use
+```{r}
 national_polls <- data_long %>% filter(state=="--")
 state_polls <- data_long %>% filter(state!="--")
 swing_states <- c("PA", "FL", "GA", "AZ", "IO", "OH", "TX", "MI", "WI")
-
 ```
 
-We have three inputs here: 
+
+We have three inputs in `pivot_longer`: 
 
 - `cols`: the variables you want to convert from wide to long.
 - `names_to`: new variable for the columns names from the wide data.
@@ -146,7 +156,7 @@ Bit of a mess. But we will make it prettier.
 
 ![](/images/aes.png)
 
-### Some Aesthethics Examples
+### Some Aesthethics Examples:
 
 #### Color
 
@@ -157,7 +167,10 @@ ggplot(data=national_polls, # the data step
 geom_point()
 
 ```
-#### Shape
+
+
+### Shape
+
 
 ```{r}
 ggplot(data=national_polls, # the data step
@@ -166,6 +179,29 @@ ggplot(data=national_polls, # the data step
            shape=Vote_Choice)) + # the map step
 geom_point() 
 ```
+
+#### Alpha
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           shape=Vote_Choice, 
+           alpha=end.date)) + # the map step
+geom_point() 
+```
+#### Linetype
+
+```{r}
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           alpha=end.date, 
+           linetype=Vote_Choice)) + # the map step
+geom_smooth()
+```
+
+Infinite possibilities to show variations on your dataset and maps your variables to visuals. We will go over some examples of more complete visualizations. Now let's see some examples of `geoms` you might consider. 
 
 ### Some Geom Examples
 
@@ -185,7 +221,7 @@ ggplot(data=national_polls,
        aes(x=end.date)) +
 geom_density(fill="steelblue")
 
-# ANother one
+# Another one using the facet_wrap
 ggplot(data=state_polls %>% filter(state%in%swing_states)) +
   geom_density(aes(x=end.date, fill=state), alpha=.3) +
   facet_wrap(~state, ncol=3)
@@ -226,6 +262,7 @@ After you are set on the mapping and geoms, the next step is to adjust the scale
 - `scale_fill_manual`: To create your own discrete set of fill. 
 - `scale_colour_brewer()`: Change the Pallet of Colours
 
+From now on, I will present more complete graphs, that would be similar to one I would add in a research paper. 
 
 ```{r}
 
@@ -256,8 +293,6 @@ Most of the adjustments you can make on your plot go inside of the `theme` funct
 my_font <- "Palatino Linotype"
 my_bkgd <- "#f5f5f2"
 pal <- RColorBrewer::brewer.pal(9, "Spectral")
-
-
 my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
                   rect = element_rect(fill = my_bkgd),
                   plot.background = element_rect(fill = my_bkgd, color = NA),
@@ -271,19 +306,17 @@ my_theme <- theme(text = element_text(family = my_font, color = "#22211d"),
                   legend.title = element_text(size=14),
                   plot.title = element_text(size = 22, face = "bold", family=my_font),
                   plot.subtitle = element_text(size=16, family=my_font),
-                  axis.title= element_text(size=22),
+                  axis.title= element_text(size=14),
                   
-                  axis.text = element_text(size=14, family=my_font),
+                  axis.text = element_text(size=12, family=my_font),
                   axis.title.x = element_text(hjust=1),
                   strip.text = element_text(family = my_font, color = "#22211d",
-                                            size = 13, face="italic"))
+                                            size = 10, face="italic"))
 
 ```
 
 
-
-
-The last function sets your R environment to use your newly created theme in all your plots. Lets see this in our old graph:
+Then you can set your R environment to use your newly created theme in all your plots. 
 
 ```{r eval=FALSE}
 # This sets up for all your plots
@@ -294,7 +327,6 @@ theme_set(theme_bw() + my_theme)
 Or you can do by hand
 ```{r}
 p +
-  theme_base() +
   my_theme
 
 ```
@@ -349,17 +381,8 @@ With this model, most of us learned to extract quantities using functions likes 
 results <- tidy(lm_time)
 results
 ```
-### Plot
 
-Not a nice plot, but just an example. 
-```{r}
-results %>% 
-  mutate(lb=estimate - 1.96*std.error, 
-         up=estimate+ 1.96*std.error) %>%
-  ggplot(data=., aes(y=estimate, ymin=lb, ymax=up, x=term)) +
-  geom_pointrange() +
-  coord_flip()
-```
+You can plot these quantities directly. The graph for you paper is basically ready. 
 
 ### Predicted Values with Augment
 
@@ -427,7 +450,7 @@ to_plot <- nested_data %>%
               drop_na()
 # graph
 ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
-  geom_pointrange(shape=21, fill="tomato2", color="black", alpha=.8) +
+  geom_pointrange(shape=21, fill="blue", color="black", alpha=.8) +
   geom_hline(yintercept = 0, linetype="dashed", color="gray") +
   coord_flip() +
   theme_minimal() +
@@ -443,7 +466,6 @@ To conclude our workshop, I will show you the code my recent paper (co-authored 
 ### Risk Perceptions and Partisanship
 
 The plan is to estimate a model of partisanship on three different outcomes. Let's see how we can do this with the tools we learned so far.
-
 
 
 #### Tidy the data
