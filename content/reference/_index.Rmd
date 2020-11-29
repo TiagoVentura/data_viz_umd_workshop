@@ -20,23 +20,16 @@ To build this workshop, I borrowed ideas and codes from several sources. The one
 - [Data Visualization: A practical introduction](https://socviz.co/) by Kieran Healy 
 
 - [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/index.html) by Claus Wilke
+
 ### Courses
 
 - [http://socviz880.co/](http://socviz880.co/) by Kieran Healy
 
 - [Introduction to Data Science](http://ericdunford.com/ppol670/) by Eric Dunford
 
-- []()
-
-### Random Codes
-
-- [Data Visualization Cheat Sheet]
-
 ### Places to Find Nice Graphs
 
-I often find myself searching for visualizations on Twitter. A lot of good stuff come out from the hastag #tidytuesday. You should take a look at. 
-
-In addition, I love the pages below:
+- **Tidy Tuesday on Twitter**
 
 - [Top 50 Visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)
 
