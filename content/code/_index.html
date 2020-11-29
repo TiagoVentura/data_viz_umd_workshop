@@ -13,8 +13,8 @@ output:
 
 <p>As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers); just a few of your peers will know where to look at that table, while a nice graph can be quite intuitive to follow through.</p>
 <p>This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph.</p>
-<div id="main-goals" class="section level3">
-<h3>Main Goals</h3>
+<div id="main-goals" class="section level2">
+<h2>Main Goals</h2>
 <p>By the end of the workshop, I expect you to know how to:</p>
 <ul>
 <li>Prepare your data for easy visualization.</li>
@@ -22,8 +22,8 @@ output:
 <li>Use ggplot2 to build an informative visualization.</li>
 </ul>
 </div>
-<div id="how-to-get-there" class="section level3">
-<h3>How to get there?</h3>
+<div id="how-to-get-there" class="section level2">
+<h2>How to get there?</h2>
 <ul>
 <li>Basics of ggplot</li>
 <li>Tidy Data with TidyR</li>
@@ -116,6 +116,12 @@ output:
                names_to=&quot;Vote_Choice&quot;, 
                values_to=&quot;Vote&quot;) %&gt;%
   mutate(end.date=as.Date(str_replace_all(end.date, &quot;/&quot;, &quot;-&quot;), format = &quot;%m-%d-%Y&quot;))</code></pre>
+<p>We have three inputs in <code>pivot_longer</code>:</p>
+<ul>
+<li><code>cols</code>: the variables you want to convert from wide to long.</li>
+<li><code>names_to</code>: new variable for the columns names from the wide data.</li>
+<li><code>values_to</code>: new variable for the values from the wide data.</li>
+</ul>
 <p>And now:</p>
 <pre class="r"><code>data_long</code></pre>
 <pre><code>## # A tibble: 3,228 x 17
@@ -135,17 +141,11 @@ output:
 ## #   population &lt;chr&gt;, mode &lt;chr&gt;, biden_margin &lt;dbl&gt;, other &lt;dbl&gt;,
 ## #   undecided &lt;dbl&gt;, url &lt;chr&gt;, include &lt;lgl&gt;, notes &lt;chr&gt;, Vote_Choice &lt;chr&gt;,
 ## #   Vote &lt;dbl&gt;</code></pre>
+<p>With this tidy dataset, we can start our visualization.</p>
 <p>Let’s now separate the data for our later use</p>
 <pre class="r"><code>national_polls &lt;- data_long %&gt;% filter(state==&quot;--&quot;)
 state_polls &lt;- data_long %&gt;% filter(state!=&quot;--&quot;)
 swing_states &lt;- c(&quot;PA&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;AZ&quot;, &quot;IO&quot;, &quot;OH&quot;, &quot;TX&quot;, &quot;MI&quot;, &quot;WI&quot;)</code></pre>
-<p>We have three inputs in <code>pivot_longer</code>:</p>
-<ul>
-<li><code>cols</code>: the variables you want to convert from wide to long.</li>
-<li><code>names_to</code>: new variable for the columns names from the wide data.</li>
-<li><code>values_to</code>: new variable for the values from the wide data.</li>
-</ul>
-<p>With this tidy dataset, we can start our visualization.</p>
 </div>
 </div>
 <div id="part-2-linking-the-data-to-visuals-mapping." class="section level2">
@@ -185,16 +185,19 @@ geom_point()</code></pre>
            shape=Vote_Choice)) + # the map step
 geom_point() </code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<div id="alpha" class="section level4">
-<h4>Alpha</h4>
+</div>
+<div id="alpha" class="section level3">
+<h3>Alpha</h3>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
            color=Vote_Choice,
            shape=Vote_Choice, 
            alpha=end.date)) + # the map step
 geom_point() </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
-#### Linetype</p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="linetype" class="section level3">
+<h3>Linetype</h3>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
            color=Vote_Choice,
@@ -203,7 +206,6 @@ geom_point() </code></pre>
 geom_smooth()</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Infinite possibilities to show variations on your dataset and maps your variables to visuals. We will go over some examples of more complete visualizations. Now let’s see some examples of <code>geoms</code> you might consider.</p>
-</div>
 </div>
 <div id="some-geom-examples" class="section level3">
 <h3>Some Geom Examples</h3>

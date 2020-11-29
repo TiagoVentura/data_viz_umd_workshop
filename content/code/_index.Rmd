@@ -14,7 +14,7 @@ As an academic, one of the most important skills you need to have is the ability
 
 This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph. 
 
-### Main Goals
+## Main Goals
 
 By the end of the workshop, I expect you to know how to:
 
@@ -22,7 +22,7 @@ By the end of the workshop, I expect you to know how to:
 - Run and extract information from statistical models.
 - Use ggplot2 to build an informative visualization. 
 
-### How to get there?
+## How to get there?
 
 - Basics of ggplot
 - Tidy Data with TidyR
@@ -109,10 +109,21 @@ data_long <- data %>%
 
 ```
 
+We have three inputs in `pivot_longer`: 
+
+- `cols`: the variables you want to convert from wide to long.
+- `names_to`: new variable for the columns names from the wide data.
+- `values_to`: new variable for the values from the wide data. 
+
+
+
 And now: 
 ```{r}
 data_long
 ```
+
+
+With this tidy dataset, we can start our visualization. 
 
 Let's now separate the data for our later use
 ```{r}
@@ -121,14 +132,6 @@ state_polls <- data_long %>% filter(state!="--")
 swing_states <- c("PA", "FL", "GA", "AZ", "IO", "OH", "TX", "MI", "WI")
 ```
 
-
-We have three inputs in `pivot_longer`: 
-
-- `cols`: the variables you want to convert from wide to long.
-- `names_to`: new variable for the columns names from the wide data.
-- `values_to`: new variable for the values from the wide data. 
-
-With this tidy dataset, we can start our visualization. 
 
 ## Part 2: Linking the Data to Visuals (Mapping).
 
@@ -180,7 +183,7 @@ ggplot(data=national_polls, # the data step
 geom_point() 
 ```
 
-#### Alpha
+### Alpha
 
 ```{r}
 ggplot(data=national_polls, # the data step
@@ -190,7 +193,8 @@ ggplot(data=national_polls, # the data step
            alpha=end.date)) + # the map step
 geom_point() 
 ```
-#### Linetype
+
+### Linetype
 
 ```{r}
 ggplot(data=national_polls, # the data step

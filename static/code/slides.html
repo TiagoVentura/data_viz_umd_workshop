@@ -555,12 +555,13 @@ p +
 ```
 
 &lt;img src="slides_files/figure-html/unnamed-chunk-26-1.png" width="50%" /&gt;
+
 --- 
 ---
 
 # Pre-built plots
 
-There are several packages in R and built-in in gpplot with pre-built themes. Some examples from `ggthemes` and `hrbrtheme`
+There are several packages in R and built-in in gpplot with pre-built themes. Some examples from `ggthemes` and `hrbrthemes`
 
 - theme_minimal()
 
@@ -570,6 +571,28 @@ There are several packages in R and built-in in gpplot with pre-built themes. So
 
 - theme_ipsum()
 
+---
+
+.pull-left[
+
+```r
+p +
+  theme_minimal(base_size=12)
+```
+
+![](slides_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+]
+
+
+.pull-right[
+
+```r
+p +
+  theme_fivethirtyeight() 
+```
+
+![](slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+]
 
 ---
 class:inverse, center, middle
@@ -666,7 +689,7 @@ ggplot(data=.) +  geom_ribbon(aes(y=.fitted, ymin=lb,
   geom_point(aes(y = Vote, x=days), alpha=.2) 
 ```
 
-&lt;img src="slides_files/figure-html/unnamed-chunk-30-1.png" width="60%" /&gt;
+&lt;img src="slides_files/figure-html/unnamed-chunk-32-1.png" width="60%" /&gt;
 
 --- 
 ---
@@ -764,18 +787,18 @@ nested_data
 ```
 ## # A tibble: 94 x 8
 ## # Groups:   state [47]
-##    state data            model  term      estimate std.error statistic   p.value
-##    &lt;chr&gt; &lt;list&gt;          &lt;list&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 MT    &lt;tibble [18 × … &lt;lm&gt;   (Interce… 35.5       1.58       22.5   1.59e- 13
-##  2 MT    &lt;tibble [18 × … &lt;lm&gt;   days       0.0369    0.00725     5.09  1.09e-  4
-##  3 ME    &lt;tibble [19 × … &lt;lm&gt;   (Interce… 50.6       2.73       18.5   1.06e- 12
-##  4 ME    &lt;tibble [19 × … &lt;lm&gt;   days       0.00517   0.0127      0.407 6.89e-  1
-##  5 IA    &lt;tibble [32 × … &lt;lm&gt;   (Interce… 42.6       1.53       27.8   5.68e- 23
-##  6 IA    &lt;tibble [32 × … &lt;lm&gt;   days       0.0172    0.00690     2.50  1.81e-  2
-##  7 WI    &lt;tibble [95 × … &lt;lm&gt;   (Interce… 44.8       0.603      74.2   6.76e- 84
-##  8 WI    &lt;tibble [95 × … &lt;lm&gt;   days       0.0259    0.00294     8.83  6.60e- 14
-##  9 PA    &lt;tibble [112 ×… &lt;lm&gt;   (Interce… 46.4       0.486      95.4   7.18e-107
-## 10 PA    &lt;tibble [112 ×… &lt;lm&gt;   days       0.0172    0.00224     7.68  7.20e- 12
+##    state data                model  term        estimate std.error statistic   p.value
+##    &lt;chr&gt; &lt;list&gt;              &lt;list&gt; &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 MT    &lt;tibble [18 × 18]&gt;  &lt;lm&gt;   (Intercept) 35.5       1.58       22.5   1.59e- 13
+##  2 MT    &lt;tibble [18 × 18]&gt;  &lt;lm&gt;   days         0.0369    0.00725     5.09  1.09e-  4
+##  3 ME    &lt;tibble [19 × 18]&gt;  &lt;lm&gt;   (Intercept) 50.6       2.73       18.5   1.06e- 12
+##  4 ME    &lt;tibble [19 × 18]&gt;  &lt;lm&gt;   days         0.00517   0.0127      0.407 6.89e-  1
+##  5 IA    &lt;tibble [32 × 18]&gt;  &lt;lm&gt;   (Intercept) 42.6       1.53       27.8   5.68e- 23
+##  6 IA    &lt;tibble [32 × 18]&gt;  &lt;lm&gt;   days         0.0172    0.00690     2.50  1.81e-  2
+##  7 WI    &lt;tibble [95 × 18]&gt;  &lt;lm&gt;   (Intercept) 44.8       0.603      74.2   6.76e- 84
+##  8 WI    &lt;tibble [95 × 18]&gt;  &lt;lm&gt;   days         0.0259    0.00294     8.83  6.60e- 14
+##  9 PA    &lt;tibble [112 × 18]&gt; &lt;lm&gt;   (Intercept) 46.4       0.486      95.4   7.18e-107
+## 10 PA    &lt;tibble [112 × 18]&gt; &lt;lm&gt;   days         0.0172    0.00224     7.68  7.20e- 12
 ## # … with 84 more rows
 ```
 
@@ -804,7 +827,7 @@ ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
 
 class: center, middle 
 
-![](slides_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+![](slides_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -815,7 +838,7 @@ class:inverse, center, middle
 ## Partisanship, Covid and Risk Perceptions in Brazil. 
 ---
 
-# An example of my workflow
+# An Example of my Workflow
 
 To conclude our workshop, I will show you the code my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. 
 
@@ -824,7 +847,7 @@ The paper is about partisanship and risk perceptions about COVID-19, and uses bo
 The paper and replication files can be found [here](https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021) on my github account. 
 
 --
-### Our goal
+### Our Goal
 
 A model of partisanship on three different outcomes. 
 
@@ -832,7 +855,7 @@ A model of partisanship on three different outcomes.
 
 ---
 
-## Tidy the data
+## Tidy Your Data
 
 
 ```r
@@ -951,7 +974,7 @@ ggplot(to_plot, aes(y=estimate, x=labels_iv,
 
 class: center, middle
 
-![](slides_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+![](slides_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

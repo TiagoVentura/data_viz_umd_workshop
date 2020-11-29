@@ -33,10 +33,10 @@
   --header-font-is-google: 1;
   --code-font-family: 'Source Code Pro';
   --code-font-is-google: 1;
-  --base-font-size: 20px;
-  --text-font-size: 5;
-  --code-font-size: 0.9rem;
-  --code-inline-font-size: 1em;
+  --base-font-size: 16px;
+  --text-font-size: 12;
+  --code-font-size: 0.75rem;
+  --code-inline-font-size: 0.75em;
   --header-h1-font-size: 2.75rem;
   --header-h2-font-size: 2.25rem;
   --header-h3-font-size: 1.75rem;
@@ -127,8 +127,14 @@ a, a > code {
 .inverse h1, .inverse h2, .inverse h3 {
   color: var(--inverse-header-color);
 }
-.title-slide, .title-slide h1, .title-slide h2, .title-slide h3 {
+
+.title-slide, .title-slide h1{
   color: var(--title-slide-text-color);
+  font-size: 60px;
+}
+.title-slide h2, .title-slide h3 {
+  color: var(--title-slide-text-color);
+  font-size: 32px ;
 }
 .title-slide {
   background-color: var(--title-slide-background-color);
