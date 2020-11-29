@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data Visualization in R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Tiago Ventura" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+    <link rel="stylesheet" href="fontsrladies.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Data Visualization in R
+### Tiago Ventura
+### University of Maryland
+
+---
+
+
+
+class: center, middle
+
+# My approach
+
+**Always better to present your results with a graph**
+
+And keep all (or most of) your models and descriptive tables in the appendix. 
+
+---
+
+# Main Goals for Today
+
+By the end of the workshop, I expect you to know how to:
+
+- Prepare your data for easy visualization. 
+
+- Run and extract information from statistical models.
+
+- Use ggplot2 to build an informative visualization. 
+
+---
+
+## How to get there? 
+
+- Basics of ggplot
+
+- Tidy Data with TidyR
+
+- Broom for Model Quantities
+
+- Case studies (from my own work)
+
+---
+
+class:inverse, center, middle 
+
+# Basics of ggplot2
+
+---
+### What do you see? 
+
+&lt;img src="res_no_band.png" width="100%" /&gt;
+
+
+---
+
+# How ggplot works
+
+- Data Visualization involves connecting (mapping) variables from your data to graphical representations. 
+
+- Ggplot provides you with a language to map data and to a plot. 
+
+- Ggplot works by connecting data and visual components through a function called __aesthethics mapping__ (aes).
+
+- Every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. 
+
+---
+
+# Summary
+
+
+.pull-left[
+&lt;img src="ggplot_flow1.png" width="70%" /&gt;
+]
+
+.pull-right[
+&lt;img src="ggplot_flow2.png" width="62%" /&gt;
+]
+
+
+---
+class:inverse, center, middle
+
+# Tidy your data
+---
+
+# Starting some coding
+
+Let's first call our packages. I am using the package [packman](http://trinker.github.io/pacman/vignettes/Introduction_to_pacman.html) to help me manage my libraries.
+
+
+```r
+pacman::p_load(tidyverse, gapminder, kableExtra, tidyr, ggthemes, patchwork, broom)
+```
+
+This is a tidy data:
+
+
+```r
+knitr::kable(head(gapminder), format = 'html')
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; continent &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; lifeExp &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pop &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; gdpPercap &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1952 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.801 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8425333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 779.4453 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1957 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30.332 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9240934 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 820.8530 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1962 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.997 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10267083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 853.1007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1967 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34.020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11537966 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 836.1971 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1972 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13079460 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 739.9811 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1977 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.438 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14880372 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 786.1134 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Tidy Data
+
+There are three interrelated rules which make a [dataset tidy](https://r4ds.had.co.nz/tidy-data.html). 
+
+- Each variable must have its own column.
+- Each observation must have its own row.
+- Each value must have its own cell.
+
+&lt;img src="tidy.png" width="100%" /&gt;
+
+
+---
+
+# Getting our own data
+
+```r
+data &lt;- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18Lipu1_i3ID9JE06voJEz2EXm6JW4Vh11zmndyTwejMavuNntzIWLY0RyhA1UsVEen0/pub?gid=0&amp;single=true&amp;output=csv")
+```
+
+### Is this data tidy? (You can say just checking colnames)
+
+```
+##  [1] "state"                  "pollster"               "sponsor"               
+##  [4] "start.date"             "end.date"               "entry.date.time..et."  
+##  [7] "number.of.observations" "population"             "mode"                  
+## [10] "biden"                  "trump"                  "biden_margin"          
+## [13] "other"                  "undecided"              "url"                   
+## [16] "include"                "notes"
+```
+
+---
+# Pivoting to make the data tidy (Pivot Longer)
+
+
+```r
+data_long &lt;- data %&gt;% 
+*              pivot_longer(cols=c(biden,trump),
+*                           names_to="Vote_Choice",
+*                           values_to="Vote") %&gt;%
+              mutate(end.date=as.Date(str_replace_all(end.date,
+                              "/", "-"), format = "%m-%d-%Y"))
+```
+
+We have three inputs in `pivot_longer`: 
+
+- `cols`: the variables you want to convert from wide to long.
+- `names_to`: new variable for the columns names from the wide data.
+- `values_to`: new variable for the values from the wide data. 
+
+---
+
+## And now: 
+
+
+```r
+data_long %&gt;% 
+  select(Vote_Choice, Vote) %&gt;%
+  slice(1:5)
+```
+
+```
+## # A tibble: 5 x 2
+##   Vote_Choice  Vote
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 biden          45
+## 2 trump          50
+## 3 biden          52
+## 4 trump          40
+## 5 biden          47
+```
+
+
+
+
+&lt;br&gt;
+&lt;br&gt;
+
+### .center[With this tidy dataset, we can start our visualizations.] 
+
+---
+class:inverse, center, middle
+
+# Basics of ggplot
+---
+
+## Linking the Data to Visuals (Mapping).
+
+Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
+
+--
+
+- **The Data Step**: Tell ggplot what your data is.
+
+--
+
+- **The Mapping Step:** Tell ggplot **what** variables -&gt; visuals you want to see.
+
+--
+
+- **The Geom Step:** Tell ggplot **how** you want to see
+
+--
+
+---
+
+# Polls Over Time (Ugly but with the basics)
+
+
+```r
+ggplot(data=national_polls, # the data step 
+       aes(x=end.date, y=Vote)) + # the map step
+geom_point() # the geom step
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-11-1.png" width="60%" /&gt;
+
+---
+
+# Aesthethics: Color
+
+
+```r
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote, 
+           color=Vote_Choice)) + # the map step
+geom_point()
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-12-1.png" width="60%" /&gt;
+ 
+---
+
+# Aesthethics: Shape
+
+
+```r
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           shape=Vote_Choice)) + # the map step
+geom_point() 
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-13-1.png" width="60%" /&gt;
+
+
+---
+
+
+# Aesthethics: Alpha
+
+
+```r
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote,
+           color=Vote_Choice,
+           shape=Vote_Choice, 
+           alpha=end.date)) + # the map step
+geom_point() 
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-14-1.png" width="60%" /&gt;
+
+---
+
+# Aesthethics: Linetype
+
+
+```r
+ggplot(data=national_polls, # the data step
+       aes(x=end.date, y=Vote)) + # the map step
+geom_smooth(aes(linetype=Vote_Choice)) +
+geom_point(aes(color=Vote_Choice), alpha=.2)
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-15-1.png" width="60%" /&gt;
+
+---
+
+# Some notes
+
+- You can use multiple aesthetics together. 
+
+- One variables for each aesthethic (that's why your data should be tidy)
+
+- Outside of Aes, the aesthetics work with a simple value, not a variable linking data and geoms. 
+
+
+---
+class:inverse, center, middle
+
+# Geoms
+---
+
+# Smooting the data
+
+
+```r
+ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth()
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-16-1.png" width="60%" /&gt;
+
+---
+
+# Density
+
+
+```r
+ggplot(data=national_polls,
+       aes(x=end.date)) +
+geom_density(fill="steelblue")
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-17-1.png" width="60%" /&gt;
+
+---
+
+# Nice Trick: facet wrap
+
+```r
+ggplot(data=state_polls %&gt;% filter(state%in%swing_states)) +
+  geom_density(aes(x=end.date, fill=state), alpha=.3) +
+  facet_wrap(~state, ncol=3)
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-18-1.png" width="60%" /&gt;
+
+---
+
+# Bars
+
+
+```r
+ggplot(data=data_long,
+       aes(x=end.date, fill=mode)) +
+geom_bar() +
+scale_fill_brewer(palette = "Set3")
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-19-1.png" width="60%" /&gt;
+
+---
+
+# Box Plot 
+
+
+
+```r
+# Another example
+ggplot(state_polls %&gt;% filter(state%in%swing_states),
+       aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c("biden"="blue","trump"="red")) 
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-20-1.png" width="60%" /&gt;
+
+---
+class:inverse, center, middle
+
+# And many, many, many more options. 
+
+### See Materials in the website for this workshop
+
+---
+
+## Part 4: Adjust scales, labels,  titles, and more.
+
+After you are set on the mapping and geoms, the next step is to adjust the scale of your the graph. These functions are usually on the form: `scale_aesthethic_type`. 
+
+- `scale_x_log10`: To convert the numeric axis to the log scale
+- `scale_y_reverse`: To reverse the scale
+- `scale_fill_manual`: To create your own discrete set of fill. 
+- `scale_colour_brewer()`: Change the Pallet of Colours
+
+
+---
+
+
+# Putting all together
+
+
+```r
+p &lt;- ggplot(data=national_polls,
+       aes(x=end.date, y=Vote, color=Vote_Choice, 
+           shape=Vote_Choice, fill=Vote_Choice)) + 
+geom_point(alpha=.2) +
+geom_smooth() +
+scale_shape_manual(values =c(21, 23)) +
+scale_fill_manual(values=c("red", "blue")) +
+scale_color_manual(values=c("red", "blue"), 
+                   labels=c("Biden", "Trump"), 
+                   name= "Vote Choice") +
+scale_x_date(date_breaks = "1 month", date_labels = "%b %d") +
+guides(fill=FALSE, shape=FALSE) +
+labs(x = "End of the Poll", y = "Results",
+         title = "Polls US Presidential Election",
+         subtitle = "",
+         caption = "Source: The Economist")  
+```
+
+
+---
+class: center, middle 
+
+![](slides_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+---
+
+# Part 5: Embellishment as an consistent workflow
+
+- Most of the adjustments you can make on your plot go inside of the `theme` function.
+
+- When working in a paper, you should be consistent with your graphs. 
+
+- Create your own theme, and apply to all your codes. 
+
+---
+
+# Build Your Theme
+
+
+```r
+# Set up my theme  ------------------------------------------------------------
+my_font &lt;- "Palatino Linotype"
+my_bkgd &lt;- "#f5f5f2"
+pal &lt;- RColorBrewer::brewer.pal(9, "Spectral")
+my_theme &lt;- theme(text = element_text(family = my_font, color = "#22211d"),
+            rect = element_rect(fill = my_bkgd),
+            plot.background = element_rect(fill = my_bkgd, color = NA),
+            panel.background = element_rect(fill = my_bkgd, color = NA),
+            panel.border = element_rect(color="black"), 
+            strip.background = element_rect(color="black", fill="gray85"), 
+            legend.background = element_rect(fill = my_bkgd, color = NA),
+            legend.key = element_rect(size = 6, fill = "white", colour = NA), 
+            legend.key.size = unit(1, "cm"),
+            legend.text = element_text(size = 10, family = my_font),
+            legend.title = element_text(size=10),
+            plot.title = element_text(size = 22, face = "bold", family=my_font),
+            plot.subtitle = element_text(size=16, family=my_font),
+            axis.title= element_text(size=14),
+            axis.text = element_text(size=8, family=my_font),
+            axis.title.x = element_text(hjust=1),
+            strip.text = element_text(family = my_font, color = "#22211d",
+                                            size = 10, face="italic"))
+```
+
+
+```r
+# This sets up for all your plots
+
+*theme_set(theme_bw() + my_theme)
+```
+---
+
+## Or by hand for each plot 
+
+
+
+
+.pull-left[
+
+```r
+p +
+  theme_bw() + 
+  my_theme
+```
+]
+
+--
+.pull-right[
+&lt;img src="slides_files/figure-html/unnamed-chunk-27-1.png" width="100%" /&gt;
+]
+--
+
+---
+
+# Pre-built plots
+
+There are several packages in R and built-in in gpplot with pre-built themes. Some examples from `ggthemes` and `hrbrthemes`
+
+- theme_minimal()
+
+- theme_economist()
+
+- theme_fivethirtyeight()
+
+- theme_ipsum()
+
+---
+
+.pull-left[
+
+```r
+p +
+  theme_minimal(base_size=12)
+```
+
+![](slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+]
+
+
+.pull-right[
+
+```r
+p +
+  theme_fivethirtyeight() 
+```
+
+![](slides_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+]
+
+---
+class:inverse, center, middle
+
+# Modelling with Broom and Purrr
+---
+
+# Broom 
+
+- We have discussed how to go from your raw data to informative visualization plots. 
+
+- From this section forward, we will use the same logic to go from your statistical models outputs to plots. 
+
+- We will use David Robinson’s `broom` package to help us out, and the tidyverse package `purrr`. 
+
+### A Simple Model
+
+
+```r
+# Separate the data
+biden &lt;- national_polls %&gt;%
+      filter(Vote_Choice=="biden") %&gt;%
+      mutate(first_day=min(end.date, na.rm=TRUE), 
+             days=as.numeric(end.date-first_day))
+
+# simple linear model
+
+lm_time &lt;- lm(Vote~ days, data=biden)
+```
+
+---
+
+# Extract Quantities with Broom
+
+- `tidy`: to extract the model main parameters
+- `augment`: to extract observation-level statistics (predictions)
+- `glance`: to extract model-level statistics. 
+
+## Tidy: Extract Quantities
+
+```r
+# a data frame
+results &lt;- tidy(lm_time)
+results
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)  46.7      0.318       147.  0.      
+## 2 days          0.0164   0.00156      10.5 2.06e-23
+```
+
+---
+
+# Augment: Predicted Values 
+
+
+```r
+augment(lm_time)
+```
+
+```
+## # A tibble: 495 x 8
+##     Vote  days .fitted .resid .std.resid    .hat .sigma   .cooksd
+##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+##  1    52   305    51.7  0.339      0.126 0.00653   2.71 0.0000519
+##  2    52   304    51.6  0.355      0.132 0.00645   2.71 0.0000564
+##  3    51   304    51.6 -0.645     -0.239 0.00645   2.71 0.000185 
+##  4    52   306    51.7  0.323      0.120 0.00661   2.71 0.0000476
+##  5    48   304    51.6 -3.64      -1.35  0.00645   2.70 0.00593  
+##  6    50   305    51.7 -1.66      -0.616 0.00653   2.71 0.00125  
+##  7    53   305    51.7  1.34       0.497 0.00653   2.71 0.000810 
+##  8    53   306    51.7  1.32       0.491 0.00661   2.71 0.000800 
+##  9    53   305    51.7  1.34       0.497 0.00653   2.71 0.000810 
+## 10    50   306    51.7 -1.68      -0.622 0.00661   2.71 0.00129  
+## # … with 485 more rows
+```
+
+---
+
+# Plot The Predicted Values
+
+
+```r
+# Plot
+augment(lm_time, se_fit = TRUE) %&gt;% 
+  mutate(lb=.fitted - 1.96*.se.fit, 
+         ub=.fitted + 1.96*.se.fit) %&gt;%
+ggplot(data=.) +  geom_ribbon(aes(y=.fitted, ymin=lb,
+                  ymax=ub, x=days), alpha=.2) +
+  geom_line(aes(y=.fitted, x=days), color="blue") +
+  geom_point(aes(y = Vote, x=days), alpha=.2) 
+```
+
+&lt;img src="slides_files/figure-html/unnamed-chunk-33-1.png" width="60%" /&gt;
+
+--- 
+---
+
+## Running Multiple Models
+
+What if I want to run the same model for multiple subgroups? Or multiple different models? 
+
+Use `purrr` for functional programming. This is where R and tidyverse gets really beautiful.
+
+The logic is simple. We will nest our data, run models in the subgroups, tidy the results, and unnest everything in a tidy format dataset.
+
+
+--- 
+---
+
+## Nest the Data 
+
+
+```r
+# Step 1: Nest your data
+nested_data &lt;- state_polls %&gt;%
+                 filter(Vote_Choice=="biden") %&gt;%
+                 mutate(first_day=min(end.date, na.rm=TRUE), 
+                         days=as.numeric(end.date-first_day)) %&gt;%
+*                group_by(state) %&gt;%
+*                nest()
+
+nested_data
+```
+
+```
+## # A tibble: 47 x 2
+## # Groups:   state [47]
+##    state data               
+##    &lt;chr&gt; &lt;list&gt;             
+##  1 MT    &lt;tibble [18 × 18]&gt; 
+##  2 ME    &lt;tibble [19 × 18]&gt; 
+##  3 IA    &lt;tibble [32 × 18]&gt; 
+##  4 WI    &lt;tibble [95 × 18]&gt; 
+##  5 PA    &lt;tibble [112 × 18]&gt;
+##  6 NC    &lt;tibble [104 × 18]&gt;
+##  7 MI    &lt;tibble [112 × 18]&gt;
+##  8 FL    &lt;tibble [105 × 18]&gt;
+##  9 AZ    &lt;tibble [88 × 18]&gt; 
+## 10 MN    &lt;tibble [34 × 18]&gt; 
+## # … with 37 more rows
+```
+
+The data column is called a [list-column](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) because it works as a list where every element has a entire dataset. 
+
+With a list of datasets, we can use functional programming in `purrr` to run the same models for each dataset. 
+
+---
+
+## Run the Models
+
+
+```r
+nested_data &lt;- nested_data %&gt;%
+*               mutate(model=map(data, ~ lm(Vote~days, .x)))
+
+nested_data
+```
+
+```
+## # A tibble: 47 x 3
+## # Groups:   state [47]
+##    state data                model 
+##    &lt;chr&gt; &lt;list&gt;              &lt;list&gt;
+##  1 MT    &lt;tibble [18 × 18]&gt;  &lt;lm&gt;  
+##  2 ME    &lt;tibble [19 × 18]&gt;  &lt;lm&gt;  
+##  3 IA    &lt;tibble [32 × 18]&gt;  &lt;lm&gt;  
+##  4 WI    &lt;tibble [95 × 18]&gt;  &lt;lm&gt;  
+##  5 PA    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
+##  6 NC    &lt;tibble [104 × 18]&gt; &lt;lm&gt;  
+##  7 MI    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
+##  8 FL    &lt;tibble [105 × 18]&gt; &lt;lm&gt;  
+##  9 AZ    &lt;tibble [88 × 18]&gt;  &lt;lm&gt;  
+## 10 MN    &lt;tibble [34 × 18]&gt;  &lt;lm&gt;  
+## # … with 37 more rows
+```
+
+---
+## Unnest (All back to normal)
+
+```r
+nested_data &lt;- nested_data %&gt;% 
+                     mutate(results=map(model, tidy)) %&gt;%
+*                    unnest(results)
+
+nested_data
+```
+
+```
+## # A tibble: 94 x 8
+## # Groups:   state [47]
+##    state data            model  term      estimate std.error statistic   p.value
+##    &lt;chr&gt; &lt;list&gt;          &lt;list&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 MT    &lt;tibble [18 × … &lt;lm&gt;   (Interce… 35.5       1.58       22.5   1.59e- 13
+##  2 MT    &lt;tibble [18 × … &lt;lm&gt;   days       0.0369    0.00725     5.09  1.09e-  4
+##  3 ME    &lt;tibble [19 × … &lt;lm&gt;   (Interce… 50.6       2.73       18.5   1.06e- 12
+##  4 ME    &lt;tibble [19 × … &lt;lm&gt;   days       0.00517   0.0127      0.407 6.89e-  1
+##  5 IA    &lt;tibble [32 × … &lt;lm&gt;   (Interce… 42.6       1.53       27.8   5.68e- 23
+##  6 IA    &lt;tibble [32 × … &lt;lm&gt;   days       0.0172    0.00690     2.50  1.81e-  2
+##  7 WI    &lt;tibble [95 × … &lt;lm&gt;   (Interce… 44.8       0.603      74.2   6.76e- 84
+##  8 WI    &lt;tibble [95 × … &lt;lm&gt;   days       0.0259    0.00294     8.83  6.60e- 14
+##  9 PA    &lt;tibble [112 ×… &lt;lm&gt;   (Interce… 46.4       0.486      95.4   7.18e-107
+## 10 PA    &lt;tibble [112 ×… &lt;lm&gt;   days       0.0172    0.00224     7.68  7.20e- 12
+## # … with 84 more rows
+```
+
+---
+
+## Outputs from Unnest
+
+
+```r
+# first, remove the intercept
+to_plot &lt;- nested_data %&gt;%
+              filter(term!="(Intercept)") %&gt;%
+              mutate(ub=estimate+1.96*std.error, 
+                     lb=estimate-1.96*std.error)  %&gt;%
+              drop_na()
+# graph
+ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
+  geom_pointrange(shape=21, fill="blue", color="black", alpha=.8) +
+  geom_hline(yintercept = 0, linetype="dashed", color="gray") +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "Linear Time Trend by State",  y= "Biden Support in the Polls")  
+```
+
+---
+
+class: center, middle 
+
+![](slides_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+
+
+---
+class:inverse, center, middle
+
+# Case Study: 
+
+## Partisanship, Covid and Risk Perceptions in Brazil. 
+---
+
+# An Example of my Workflow
+
+--
+
+- To conclude our workshop, I will show you the code my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. 
+
+- The paper is about partisanship and risk perceptions about COVID-19. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil.
+
+- The paper and replication files can be found [here](https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021). 
+
+- **Our Goal**: A model of partisanship on three different outcomes. 
+--
+
+---
+
+##  Step1: Tidy Your Data
+
+
+```r
+load("CV_data.Rdata")
+library(tidyverse)
+library(tidyr)
+
+# Untidy
+d %&gt;% select(covid_job, covid_health, covid_government)
+```
+
+```
+## # A tibble: 2,362 x 3
+##    covid_job         covid_health      covid_government      
+##    &lt;fct&gt;             &lt;fct&gt;             &lt;fct&gt;                 
+##  1 Very unlikely     Somewhat unlikely Somewhat Unappropriate
+##  2 Very unlikely     Somewhat Likely   Somewhat Appropriate  
+##  3 Very Likely       Very Likely       Very Appropriate      
+##  4 Very Likely       Very Likely       Somewhat Unappropriate
+##  5 Somewhat Likely   Somewhat Likely   Somewhat Appropriate  
+##  6 Somewhat Likely   Somewhat unlikely Somewhat Appropriate  
+##  7 Very unlikely     Somewhat Likely   Very Appropriate      
+##  8 Somewhat unlikely Somewhat Likely   Very Appropriate      
+##  9 Very unlikely     Somewhat Likely   Somewhat Unappropriate
+## 10 Very Likely       Somewhat unlikely Somewhat Unappropriate
+## # … with 2,352 more rows
+```
+
+---
+
+## Make it tidy
+
+
+```r
+d_pivot &lt;- d %&gt;% 
+            pivot_longer(cols=c(covid_job, covid_health, 
+                                covid_government), 
+                         names_to="covid", 
+                         values_to="covid_values") 
+```
+
+---
+
+## What do I have now?
+
+
+```
+## # A tibble: 7,086 x 2
+##    covid            covid_values          
+##    &lt;chr&gt;            &lt;fct&gt;                 
+##  1 covid_job        Very unlikely         
+##  2 covid_health     Somewhat unlikely     
+##  3 covid_government Somewhat Unappropriate
+##  4 covid_job        Very unlikely         
+##  5 covid_health     Somewhat Likely       
+##  6 covid_government Somewhat Appropriate  
+##  7 covid_job        Very Likely           
+##  8 covid_health     Very Likely           
+##  9 covid_government Very Appropriate      
+## 10 covid_job        Very Likely           
+## # … with 7,076 more rows
+```
+
+
+---
+
+## Nest and Models
+
+
+```r
+data_nested &lt;- d_pivot %&gt;%
+                group_by(covid) %&gt;%
+                nest() %&gt;%
+                mutate(model=map(data, ~ 
+*                             lm(as.numeric(covid_values) ~
+*                                runoff_haddad +
+*                                runoff_bolsonaro +
+*                                income + gender + work +
+*                                as.numeric(education) + age , data=.x)),
+                       res=map(model,tidy)) %&gt;%
+                unnest(res) %&gt;%
+                mutate(lb=estimate - 1.96*std.error, 
+                       up= estimate + 1.96*std.error)
+```
+
+
+**Everything we need is here: group_by, nest, model, unnest. **
+
+.center[
+![](https://media.giphy.com/media/wbcMnfHqOJX9K/giphy.gif)
+]
+
+
+---
+
+# Next (Important Steps)
+
+- Fix the labels. 
+
+- **Get your labels correct before plotting**. 
+
+- By correct I mean: names and order. 
+
+--
+
+
+```r
+to_plot &lt;- data_nested %&gt;% 
+              filter(str_detect(term, "runoff")) %&gt;%
+              mutate(labels_iv=fct_recode(term, "Haddad Voters"="runoff_haddadOn", 
+                                                "Bolsonaro Voters"="runoff_bolsonaroOn")) %&gt;%
+              mutate(outcome= ifelse(covid=="covid_job", 
+                         "How likely is it that you \n could lose your job? ",
+                         ifelse(covid=="covid_health", 
+                                "How likely will your health \n be affected by COVID-19?", 
+                                "Has the government response \n been appropriate ?"))) 
+```
+
+---
+# Final Plot
+
+
+```r
+#pick my colors
+pal &lt;- RColorBrewer::brewer.pal(9, "Spectral")
+
+#graph
+ggplot(to_plot, aes(y=estimate, x=labels_iv, 
+                      ymin=up, ymax=lb, color=labels_iv)) +
+  geom_pointrange(shape=21, fill="white", size=2) +
+  labs(x="", y="Point Estimates", 
+       title = "\nPartisanship, Risk Perceptions and Government Responses to Covid in Brazil", 
+       subtitle = "Regression Estimates with Controls by Income, Gender, Age, Education, and Occupation.", 
+       caption ="Note: Baseline are Independent Voters") +
+  geom_hline(yintercept = 0, linetype="dashed", color="darkred") + 
+  scale_color_manual(values=c("Bolsonaro Voters"=pal[9], "Haddad Voters"=pal[1]),
+                     name="Who would you vote for?") +
+  facet_wrap(~outcome)  + 
+  theme_bw() +
+  theme(strip.text = element_text(size=7),
+        axis.text.x = element_blank()) 
+```
+
+---
+
+class: center, middle
+
+![](slides_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
