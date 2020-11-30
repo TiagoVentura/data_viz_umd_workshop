@@ -17,7 +17,27 @@ output:
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(message=FALSE, warning = FALSE)
 
-```
+``` 
+
+## Main Ideas for this Workshop
+
+--
+- Hands-on Data Visualization Workshop.
+
+--
+
+- Show a complete workflow to build nice visualization.
+
+--
+
+- Prepare your data before plotting.
+--
+
+- Show you how to go from your models to nice visualizations. 
+
+--
+
+---
 
 class: center, middle
 
@@ -28,26 +48,20 @@ class: center, middle
 And keep all (or most of) your models and descriptive tables in the appendix. 
 
 ---
+## How to get there?  (Summary)
 
-# Main Goals for Today
+--
+- Basics of `ggplot`
 
-By the end of the workshop, I expect you to know how to:
+--
 
-- Prepare your data for easy visualization. 
+- Tidy Data with `tidyR`
 
-- Run and extract information from statistical models.
+--
 
-- Use ggplot2 to build an informative visualization. 
+- `broom` to retrieve model quantities
 
----
-
-## How to get there? 
-
-- Basics of ggplot
-
-- Tidy Data with TidyR
-
-- Broom for Model Quantities
+--
 
 - Case studies (from my own work)
 

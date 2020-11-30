@@ -10,7 +10,7 @@ output:
 knitr::opts_chunk$set(message=FALSE, warning = FALSE)
 ```
 
-As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers); just a few of your peers will know where to look at that table, while a nice graph can be quite intuitive to follow through. 
+As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers). Very few of your colleagues will know where to look at that table, while a nice graph can be quite intuitive to follow through. 
 
 This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph. 
 
