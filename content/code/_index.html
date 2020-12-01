@@ -31,8 +31,8 @@ output:
 <li>Case studies (from my own work)</li>
 </ul>
 </div>
-<div id="basics-of-ggplot2" class="section level1">
-<h1>Basics of ggplot2</h1>
+<div id="a-workflow-for-data-visualization." class="section level1">
+<h1>A Workflow for Data Visualization.</h1>
 <div id="what-do-you-see" class="section level3">
 <h3>What do you see?</h3>
 <ul>
@@ -48,8 +48,8 @@ output:
 <p>Ggplot is based on the <a href="https://www.springer.com/gp/book/9780387245447">Grammar of Graphics</a>. In summary, ggplot works by connecting data and visual components through a function called <strong>aesthethics mapping</strong> (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from <a href="https://socviz.co/makeplot.html#makeplot">Kieran Healy</a> summarizes well the logic:</p>
 <p><img src="/images/ggplot_flow.png" style="width:30.0%" /></p>
 </div>
-<div id="part-1tidy-your-data" class="section level2">
-<h2>Part 1:Tidy your data</h2>
+<div id="part-1-tidy-your-data" class="section level2">
+<h2>Part 1: Tidy your data</h2>
 <p>Understanding what a <strong>tidy data</strong> entails is key to use ggplot. I cannot emphasize this enough, but getting you data ready (and by ready I mean tidy and with the proper labels) is 80% of the gpplot work. Most of the times some friends ask me for help with a graph, the solution is the pre-processing, and not in the plotting part of their codes.</p>
 <div id="starting-some-coding" class="section level3">
 <h3>Starting some coding</h3>
@@ -150,18 +150,23 @@ swing_states &lt;- c(&quot;PA&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;AZ&qu
 </div>
 <div id="part-2-linking-the-data-to-visuals-mapping." class="section level2">
 <h2>Part 2: Linking the Data to Visuals (Mapping).</h2>
-<p>Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps.</p>
+<div id="mapping-is-how-you-connect-your-data-and-variables-with-the-visual-representations-of-a-graph.-we-will-do-this-in-two-steps." class="section level4">
+<h4>Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps.</h4>
 <ol style="list-style-type: decimal">
 <li><p><strong>The Data Step</strong>: Tell ggplot what your data is.</p></li>
 <li><p><strong>The Mapping Step</strong>: Tell ggplot <strong>what</strong> variables -&gt; visuals you want to see.</p></li>
 <li><p><strong>The Geom Step</strong>: Tell ggplot <strong>how</strong> you want to see</p></li>
 </ol>
+</div>
+<div id="toy-example" class="section level3">
+<h3>Toy Example</h3>
 <p>Let’s plot all the polls over time using a scatter plot</p>
 <pre class="r"><code>ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote)) + # the map step
 geom_point()</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Bit of a mess. But we will make it prettier.</p>
+</div>
 <div id="which-aesthetics-i-can-use" class="section level3">
 <h3>Which Aesthetics I can use?</h3>
 <p><img src="/images/aes.png" /></p>

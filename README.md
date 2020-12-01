@@ -1,7 +1,9 @@
 # GVPT-UMD: Data Visualization Workshop
 
+This repo contains the source of the website for the Data Visualization workshop I offered at the UMD Methods Sequence in the Fall, 2020. 
 
-This repo contains...
+
+The website is here: [http://datavizgvpt.tiagoventura.rbind.io/](http://datavizgvpt.tiagoventura.rbind.io/)
 
 ## Theme
 

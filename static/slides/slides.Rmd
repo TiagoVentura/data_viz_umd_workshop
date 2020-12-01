@@ -26,14 +26,14 @@ knitr::opts_chunk$set(message=FALSE, warning = FALSE)
 
 --
 
-- Show a complete workflow to build nice visualization.
+- Show a complete Data Visualization workflow. 
 
 --
 
-- Prepare your data before plotting.
+- How to prepare your data before plotting.
 --
 
-- Show you how to go from your models to nice visualizations. 
+- Show you how to go from your models to nice graphs. 
 
 --
 
@@ -51,15 +51,22 @@ And keep all (or most of) your models and descriptive tables in the appendix.
 ## How to get there?  (Summary)
 
 --
+- A Workflow for Data Visualization.
+
+--
+
+- Tidy Data with `tidyR`.
+
+--
+
 - Basics of `ggplot`
 
 --
-
-- Tidy Data with `tidyR`
+- `broom` to retrieve model quantities.
 
 --
 
-- `broom` to retrieve model quantities
+- `purr` to run multiple models. 
 
 --
 
@@ -69,7 +76,7 @@ And keep all (or most of) your models and descriptive tables in the appendix.
 
 class:inverse, center, middle 
 
-# Basics of ggplot2
+# A Workflow for Data Visualization.
 
 ---
 ### What do you see? 
@@ -77,7 +84,6 @@ class:inverse, center, middle
 ```{r  echo=FALSE, out.width = "100%"}
 knitr::include_graphics("res_no_band.png") 
 ```
-
 
 ---
 
@@ -130,16 +136,19 @@ knitr::kable(head(gapminder), format = 'html')
 ```
 
 ---
+##  Why Tidy Data?
 
-# Tidy Data
+- Theoretical: To map a variable to a plot, you need this variables to be defined as an single column. 
 
-There are three interrelated rules which make a [dataset tidy](https://r4ds.had.co.nz/tidy-data.html). 
+- Practical:  all the tidyverse packages (dplyr, purrr, tidyr, ggplot...) work with tidy data. 
+
+## What is a Tidy Data?
 
 - Each variable must have its own column.
 - Each observation must have its own row.
 - Each value must have its own cell.
 
-```{r  echo=FALSE, out.width = "100%"}
+```{r  echo=FALSE, out.width = "70%"}
 knitr::include_graphics("tidy.png") 
 ```
 
@@ -147,6 +156,9 @@ knitr::include_graphics("tidy.png")
 ---
 
 # Getting our own data
+
+#### Pooling data from the last US Presidential Election (The Economist).
+
 ```{r }
 data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18Lipu1_i3ID9JE06voJEz2EXm6JW4Vh11zmndyTwejMavuNntzIWLY0RyhA1UsVEen0/pub?gid=0&single=true&output=csv")
 ```
@@ -157,7 +169,7 @@ colnames(data)
 ```
 
 ---
-# Pivoting to make the data tidy (Pivot Longer)
+## Pivoting to make the data tidy (Pivot Longer)
 
 ```{r comment='#'}
 data_long <- data %>% 
@@ -205,15 +217,13 @@ class:inverse, center, middle
 
 ## Linking the Data to Visuals (Mapping).
 
-Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
-
 --
 
 - **The Data Step**: Tell ggplot what your data is.
 
 --
 
-- **The Mapping Step:** Tell ggplot **what** variables -> visuals you want to see.
+- **The Mapping Step:** Tell ggplot **what** variables -> visuals you want to see. (aesthethics)
 
 --
 
@@ -223,7 +233,7 @@ Mapping is how you connect your data and variables with the visual representatio
 
 ---
 
-# Polls Over Time (Ugly but with the basics)
+# Toy Example: Polls Over Time (Ugly but with the basics)
 
 ```{r out.width='60%', fig.height=5}
 ggplot(data=national_polls, # the data step 
@@ -233,12 +243,20 @@ geom_point() # the geom step
 
 ---
 
+# Which Aesthetics I can use?
+
+```{r  echo=FALSE, out.width = "70%"}
+knitr::include_graphics("aes.png") 
+```
+
+---
+
 # Aesthethics: Color
 
 ```{r out.width='60%', fig.height=5}
 ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote, 
-           color=Vote_Choice)) + # the map step
+           color=Vote_Choice)) + #<<
 geom_point()
 
 ```
@@ -250,8 +268,8 @@ geom_point()
 ```{r  out.width='60%', fig.height=5}
 ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
-           color=Vote_Choice,
-           shape=Vote_Choice)) + # the map step
+           color=Vote_Choice,    #<<
+           shape=Vote_Choice)) + #<<
 geom_point() 
 
 ```
@@ -265,9 +283,9 @@ geom_point()
 ```{r  out.width="60%", fig.height=5}
 ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote,
-           color=Vote_Choice,
-           shape=Vote_Choice, 
-           alpha=end.date)) + # the map step
+           color=Vote_Choice, #<<
+           shape=Vote_Choice, #<<
+           alpha=end.date)) + #<<
 geom_point() 
 ```
 
@@ -278,8 +296,8 @@ geom_point()
 ```{r out.width='60%', fig.height=5}
 ggplot(data=national_polls, # the data step
        aes(x=end.date, y=Vote)) + # the map step
-geom_smooth(aes(linetype=Vote_Choice)) +
-geom_point(aes(color=Vote_Choice), alpha=.2)
+geom_smooth(aes(linetype=Vote_Choice)) + #<<
+geom_point(aes(color=Vote_Choice), alpha=.2) #<<
 ```
 
 ---
@@ -304,8 +322,8 @@ class:inverse, center, middle
 ```{r out.width='60%', fig.height=5}
 ggplot(data=national_polls,
        aes(x=end.date, y=Vote, color=Vote_Choice, fill=Vote_Choice)) + 
-geom_point(alpha=.2) +
-geom_smooth()
+geom_point(alpha=.2) + #<<
+geom_smooth() #<<
 ```
 
 ---
@@ -315,7 +333,7 @@ geom_smooth()
 ```{r out.width='60%', fig.height=5}
 ggplot(data=national_polls,
        aes(x=end.date)) +
-geom_density(fill="steelblue")
+geom_density(fill="steelblue") #<<
 
 ```
 
@@ -325,8 +343,8 @@ geom_density(fill="steelblue")
 ```{r out.width='60%', fig.height=5}
 
 ggplot(data=state_polls %>% filter(state%in%swing_states)) +
-  geom_density(aes(x=end.date, fill=state), alpha=.3) +
-  facet_wrap(~state, ncol=3)
+  geom_density(aes(x=end.date, fill=state), alpha=.3) + #<<
+  facet_wrap(~state, ncol=3) #<<
 ```
 
 ---
@@ -336,7 +354,7 @@ ggplot(data=state_polls %>% filter(state%in%swing_states)) +
 ```{r out.width='60%', fig.height=5}
 ggplot(data=data_long,
        aes(x=end.date, fill=mode)) +
-geom_bar() +
+geom_bar() + #<<
 scale_fill_brewer(palette = "Set3")
 ```
 
@@ -349,7 +367,7 @@ scale_fill_brewer(palette = "Set3")
 # Another example
 ggplot(state_polls %>% filter(state%in%swing_states),
        aes(x=Vote,y=fct_rev(state), fill=Vote_Choice)) +
-  geom_boxplot() +
+  geom_boxplot() + #<<
   scale_fill_manual(values=c("biden"="blue","trump"="red")) 
 ```
 
@@ -383,13 +401,13 @@ p <- ggplot(data=national_polls,
            shape=Vote_Choice, fill=Vote_Choice)) + 
 geom_point(alpha=.2) +
 geom_smooth() +
-scale_shape_manual(values =c(21, 23)) +
-scale_fill_manual(values=c("red", "blue")) +
-scale_color_manual(values=c("red", "blue"), 
-                   labels=c("Biden", "Trump"), 
-                   name= "Vote Choice") +
-scale_x_date(date_breaks = "1 month", date_labels = "%b %d") +
-guides(fill=FALSE, shape=FALSE) +
+scale_shape_manual(values =c(21, 23)) + #<<
+scale_fill_manual(values=c("red", "blue")) + #<<
+scale_color_manual(values=c("red", "blue"), #<<
+                   labels=c("Biden", "Trump"), #<<
+                   name= "Vote Choice") +#<<
+scale_x_date(date_breaks = "1 month", date_labels = "%b %d") +#<<
+guides(fill=FALSE, shape=FALSE) + #<<
 labs(x = "End of the Poll", y = "Results",
          title = "Polls US Presidential Election",
          subtitle = "",
@@ -550,7 +568,7 @@ class:inverse, center, middle
 
 - We have discussed how to go from your raw data to informative visualization plots. 
 
-- From this section forward, we will use the same logic to go from your statistical models outputs to plots. 
+- From this section forward, we will use the same logic to go from your model's objects to plots. 
 
 - We will use David Robinson’s `broom` package to help us out, and the tidyverse package `purrr`. 
 
@@ -576,12 +594,47 @@ lm_time <- lm(Vote~ days, data=biden)
 - `augment`: to extract observation-level statistics (predictions)
 - `glance`: to extract model-level statistics. 
 
+---
+
 ## Tidy: Extract Quantities
+
 ```{r}
 # a data frame
 results <- tidy(lm_time)
 results
 ```
+
+.pull-left[
+
+## Example of Broom::Tidy
+```{r eval=FALSE}
+results %>% 
+  filter(term!="(Intercept)") %>%
+  mutate(up=estimate + 1.96*std.error,
+         lb=estimate - 1.96*std.error)  %>%
+  ggplot(data=., aes(x=term,y=estimate, ymin=lb, ymax=up)) +
+  geom_pointrange(shape=21, fill="blue", color="black", alpha=.8) +
+  geom_hline(yintercept = 0, linetype="dashed", color="gray") +
+  coord_flip() +
+  theme_minimal() 
+```
+]
+
+.pull-right[
+```{r echo=FALSE, out.width='90%'}
+results %>% 
+  filter(term!="(Intercept)") %>%
+  mutate(up=estimate + 1.96*std.error,
+         lb=estimate - 1.96*std.error)  %>%
+  ggplot(data=., aes(x=term,y=estimate, ymin=lb, ymax=up)) +
+  geom_pointrange(shape=21, fill="blue", color="black", alpha=.8) +
+  geom_hline(yintercept = 0, linetype="dashed", color="gray") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title="Example Point Estimates")
+```
+]
+
 
 ---
 
@@ -605,9 +658,8 @@ ggplot(data=.) +  geom_ribbon(aes(y=.fitted, ymin=lb,
   geom_line(aes(y=.fitted, x=days), color="blue") +
   geom_point(aes(y = Vote, x=days), alpha=.2) 
 ```
-
---- 
 ---
+--- 
 
 ## Running Multiple Models
 
@@ -618,7 +670,6 @@ Use `purrr` for functional programming. This is where R and tidyverse gets reall
 The logic is simple. We will nest our data, run models in the subgroups, tidy the results, and unnest everything in a tidy format dataset.
 
 
---- 
 ---
 
 ## Nest the Data 
@@ -632,12 +683,26 @@ nested_data <- state_polls %>%
                  group_by(state) %>% #<<
                  nest() #<<
 
-nested_data
 ```
 
-The data column is called a [list-column](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) because it works as a list where every element has a entire dataset. 
+--
+.pull-left[
+```{r}
+nested_data
+```
+]
+--
 
-With a list of datasets, we can use functional programming in `purrr` to run the same models for each dataset. 
+
+.pull-right[
+
+--
+
+- The data column is called a [list-column](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) because it works as a list where every element has a entire dataset. 
+
+- `Purr` will iterate through the list of datasets, and run the same models for each dataset. 
+
+]
 
 ---
 

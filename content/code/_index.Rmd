@@ -29,7 +29,7 @@ By the end of the workshop, I expect you to know how to:
 - Broom for Model Quantities
 - Case studies (from my own work)
 
-# Basics of ggplot2
+# A Workflow for Data Visualization.
 
 ### What do you see? 
 
@@ -49,7 +49,7 @@ Ggplot is based on the [Grammar of Graphics](https://www.springer.com/gp/book/97
 
 ![](/images/ggplot_flow.png){ width=30% }
 
-## Part 1:Tidy your data
+## Part 1: Tidy your data
 
 Understanding what a **tidy data** entails is key to use ggplot. I cannot emphasize this enough, but getting you data ready (and by ready I mean tidy and with the proper labels) is 80% of the gpplot work. Most of the times some friends ask me for help with a graph, the solution is the pre-processing, and not in the plotting part of their codes. 
 
@@ -135,13 +135,16 @@ swing_states <- c("PA", "FL", "GA", "AZ", "IO", "OH", "TX", "MI", "WI")
 
 ## Part 2: Linking the Data to Visuals (Mapping).
 
-Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
+#### Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
 
 1. **The Data Step**: Tell ggplot what your data is. 
 
 2. **The Mapping Step**: Tell ggplot **what** variables -> visuals you want to see.
 
 3. **The Geom Step**: Tell ggplot **how** you want to see
+
+
+### Toy Example
 
 Let's plot all the polls over time using a scatter plot
 
@@ -155,9 +158,12 @@ geom_point()
 
 Bit of a mess. But we will make it prettier. 
 
+
 ### Which Aesthetics I can use?
 
 ![](/images/aes.png)
+
+
 
 ### Some Aesthethics Examples:
 
