@@ -10,42 +10,33 @@ output:
 knitr::opts_chunk$set(message=FALSE, warning = FALSE)
 ```
 
-As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers). Very few of your colleagues will know where to look at that table, while a nice graph can be quite intuitive to follow through. 
+As an academic, one of the most important skills you need is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers). Very few of your colleagues will know where to look at that table, while a nice graph can be quite intuitive to follow through. 
 
-This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph. 
+This is a hands-on, model-based workshop on data visualization using R. The main goal of the workshop is to teach you how to go from models (and data) to nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to run statistical models and extract quantities of interest . Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a graph. 
 
 ## Main Goals
 
 By the end of the workshop, I expect you to know how to:
 
 - Prepare your data for easy visualization. 
-- Run and extract information from statistical models.
 - Use ggplot2 to build an informative visualization. 
+- Run and extract information from statistical models.
+
 
 ## How to get there?
 
 - Basics of ggplot
-- Tidy Data with TidyR
+- Tidy Data with tidyR
 - Broom for Model Quantities
 - Case studies (from my own work)
 
 # A Workflow for Data Visualization.
 
-### What do you see? 
-
-- How many variables?
-
-- How many different Aesthetics?
-
-- What else?
-
-![](/images/res_no_band.png)
-
 ### How ggplot works
 
 Data Visualization involves connecting (mapping) variables on your data to graphical representations. Ggplot provides you with a language to map data and to a plot. 
 
-Ggplot is based on the [Grammar of Graphics](https://www.springer.com/gp/book/9780387245447). In summary, ggplot works by connecting data and visual components through a function called __aesthethics mapping__ (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from [Kieran Healy](https://socviz.co/makeplot.html#makeplot) summarizes well the logic:
+Ggplot is based on the [Grammar of Graphics](https://www.springer.com/gp/book/9780387245447). In summary, ggplot works by connecting data and visual components through a function called __aesthethics mapping__ (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embellishment of the plot. The plot below from [Kieran Healy](https://socviz.co/makeplot.html#makeplot) summarizes well the logic:
 
 ![](/images/ggplot_flow.png){ width=30% }
 
@@ -65,6 +56,7 @@ pacman::p_load(tidyverse, gapminder, kableExtra, tidyr, ggthemes, patchwork, bro
 This is a tidy data:
 
 ```{r}
+library(gapminder)
 gapminder
 ```
 
@@ -93,8 +85,6 @@ data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ56fySJKLL18L
 ```{r}
 glimpse(data)
 ```
-
-
 
 ### Pivoting to make the data tidy (Pivot Longer)
 
@@ -135,7 +125,7 @@ swing_states <- c("PA", "FL", "GA", "AZ", "IO", "OH", "TX", "MI", "WI")
 
 ## Part 2: Linking the Data to Visuals (Mapping).
 
-#### Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps. 
+#### Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in three steps. 
 
 1. **The Data Step**: Tell ggplot what your data is. 
 
@@ -159,10 +149,15 @@ geom_point()
 Bit of a mess. But we will make it prettier. 
 
 
-### Which Aesthetics I can use?
+### What do you see? 
 
-![](/images/aes.png)
+- How many variables?
 
+- How many different Aesthetics?
+
+- What else?
+
+![](/images/res_no_band.png)
 
 
 ### Some Aesthethics Examples:
@@ -395,6 +390,23 @@ results
 
 You can plot these quantities directly. The graph for you paper is basically ready. 
 
+```{r}
+# a data frame
+results <- tidy(lm_time)
+results %>% 
+  filter(term!="(Intercept)") %>%
+  mutate(up=estimate + 1.96*std.error,
+         lb=estimate - 1.96*std.error)  %>%
+  ggplot(data=., aes(x=term,y=estimate, ymin=lb, ymax=up)) +
+  geom_pointrange(shape=21, fill="blue", color="black", alpha=.8) +
+  geom_hline(yintercept = 0, linetype="dashed", color="gray") +
+  coord_flip() +
+  theme_minimal() 
+  
+```
+
+
+
 ### Predicted Values with Augment
 
 ```{r}
@@ -471,7 +483,7 @@ ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
 
 ## Case Study: Partisanship, Covid and Risk Perceptions in Brazil. 
 
-To conclude our workshop, I will show you the code my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses both experimental and observational data. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil. The paper and replication files can be found [here](https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021) on my github account. 
+To conclude our workshop, I will show you the code of my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses both experimental and observational data. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil. The paper and replication files can be found [here](https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021) on my github account. 
 
 
 ### Risk Perceptions and Partisanship

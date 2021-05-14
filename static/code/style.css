@@ -1,0 +1,21 @@
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+.remark-code {
+  font-size: 0.75rem;
+}
+.remark-inline-code {
+  color: #e13d3d;
+}
+.title-slide, .title-slide h1{
+  font-size: 60px;
+}
+.title-slide h2, .title-slide h3 {
+  font-size: 32px ;
+}
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+

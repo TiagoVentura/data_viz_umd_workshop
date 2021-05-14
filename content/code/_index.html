@@ -11,41 +11,32 @@ output:
   <link rel="stylesheet" href="/style/style.css" type="text/css" />
 
 
-<p>As an academic, one of the most important skills you need to have is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers). Very few of your colleagues will know where to look at that table, while a nice graph can be quite intuitive to follow through.</p>
-<p>This is a hands-on, model-based workshop on data visualization in R. The main goal of the workshop is to teach you how to go from models (and data) into nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to model and extract results. Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a ggplot graph.</p>
+<p>As an academic, one of the most important skills you need is the ability to make compelling data visualizations to present your work. A well-thought visualization is always more attractive than a table (with a bunch of stars and tiny numbers). Very few of your colleagues will know where to look at that table, while a nice graph can be quite intuitive to follow through.</p>
+<p>This is a hands-on, model-based workshop on data visualization using R. The main goal of the workshop is to teach you how to go from models (and data) to nice, informative graphs. We will be using ggplot2 as our visualization library, and some other packages from the tidyverse family to run statistical models and extract quantities of interest . Although the workshops covers some basics of data visualization using ggplot, I hope to spend more time showing how to prepare your data, and how to extract information from statistical models in a way that you can easily input into a graph.</p>
 <div id="main-goals" class="section level2">
 <h2>Main Goals</h2>
 <p>By the end of the workshop, I expect you to know how to:</p>
 <ul>
 <li>Prepare your data for easy visualization.</li>
-<li>Run and extract information from statistical models.</li>
 <li>Use ggplot2 to build an informative visualization.</li>
+<li>Run and extract information from statistical models.</li>
 </ul>
 </div>
 <div id="how-to-get-there" class="section level2">
 <h2>How to get there?</h2>
 <ul>
 <li>Basics of ggplot</li>
-<li>Tidy Data with TidyR</li>
+<li>Tidy Data with tidyR</li>
 <li>Broom for Model Quantities</li>
 <li>Case studies (from my own work)</li>
 </ul>
 </div>
 <div id="a-workflow-for-data-visualization." class="section level1">
 <h1>A Workflow for Data Visualization.</h1>
-<div id="what-do-you-see" class="section level3">
-<h3>What do you see?</h3>
-<ul>
-<li><p>How many variables?</p></li>
-<li><p>How many different Aesthetics?</p></li>
-<li><p>What else?</p></li>
-</ul>
-<p><img src="/images/res_no_band.png" /></p>
-</div>
 <div id="how-ggplot-works" class="section level3">
 <h3>How ggplot works</h3>
 <p>Data Visualization involves connecting (mapping) variables on your data to graphical representations. Ggplot provides you with a language to map data and to a plot.</p>
-<p>Ggplot is based on the <a href="https://www.springer.com/gp/book/9780387245447">Grammar of Graphics</a>. In summary, ggplot works by connecting data and visual components through a function called <strong>aesthethics mapping</strong> (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embelisshment of the plot. The plot below from <a href="https://socviz.co/makeplot.html#makeplot">Kieran Healy</a> summarizes well the logic:</p>
+<p>Ggplot is based on the <a href="https://www.springer.com/gp/book/9780387245447">Grammar of Graphics</a>. In summary, ggplot works by connecting data and visual components through a function called <strong>aesthethics mapping</strong> (aes). And every graph is built layer by layer starting with your data, aesthetics mappings, geometric decisions, and then embellishment of the plot. The plot below from <a href="https://socviz.co/makeplot.html#makeplot">Kieran Healy</a> summarizes well the logic:</p>
 <p><img src="/images/ggplot_flow.png" style="width:30.0%" /></p>
 </div>
 <div id="part-1-tidy-your-data" class="section level2">
@@ -56,7 +47,8 @@ output:
 <p>Let’s first call our packages. I am using the package <a href="http://trinker.github.io/pacman/vignettes/Introduction_to_pacman.html">packman</a> to help me manage my libraries.</p>
 <pre class="r"><code>pacman::p_load(tidyverse, gapminder, kableExtra, tidyr, ggthemes, patchwork, broom)</code></pre>
 <p>This is a tidy data:</p>
-<pre class="r"><code>gapminder</code></pre>
+<pre class="r"><code>library(gapminder)
+gapminder</code></pre>
 <pre><code>## # A tibble: 1,704 x 6
 ##    country     continent  year lifeExp      pop gdpPercap
 ##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
@@ -90,23 +82,23 @@ output:
 <pre class="r"><code>glimpse(data)</code></pre>
 <pre><code>## Rows: 1,614
 ## Columns: 17
-## $ state                  &lt;chr&gt; &quot;MT&quot;, &quot;ME&quot;, &quot;IA&quot;, &quot;WI&quot;, &quot;PA&quot;, &quot;NC&quot;, &quot;MI&quot;, &quot;FL&quot;…
-## $ pollster               &lt;chr&gt; &quot;Change Research&quot;, &quot;Change Research&quot;, &quot;Change …
-## $ sponsor                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
-## $ start.date             &lt;chr&gt; &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/…
-## $ end.date               &lt;chr&gt; &quot;11/2/2020&quot;, &quot;11/2/2020&quot;, &quot;11/1/2020&quot;, &quot;11/1/2…
-## $ entry.date.time..et.   &lt;chr&gt; &quot;11/2/2020 23:42:00&quot;, &quot;11/2/2020 23:42:00&quot;, &quot;1…
-## $ number.of.observations &lt;dbl&gt; 920, 1024, 1084, 553, 699, 473, 383, 806, 409,…
-## $ population             &lt;chr&gt; &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;…
-## $ mode                   &lt;chr&gt; &quot;Online&quot;, &quot;Online&quot;, &quot;Online&quot;, &quot;Online&quot;, &quot;Onlin…
-## $ biden                  &lt;dbl&gt; 45, 52, 47, 53, 50, 49, 51, 51, 50, 52, 53, 50…
-## $ trump                  &lt;dbl&gt; 50, 40, 47, 45, 46, 47, 44, 48, 47, 42, 41, 45…
-## $ biden_margin           &lt;dbl&gt; -5, 12, 0, 8, 4, 2, 7, 3, 3, 10, 12, 5, 2, 13,…
-## $ other                  &lt;dbl&gt; 2, 6, 3, NA, NA, NA, NA, NA, NA, NA, 2, 1, 2, …
-## $ undecided              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
-## $ url                    &lt;chr&gt; &quot;https://docs.google.com/spreadsheets/d/1TyQc9…
-## $ include                &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…
-## $ notes                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+## $ state                  &lt;chr&gt; &quot;MT&quot;, &quot;ME&quot;, &quot;IA&quot;, &quot;WI&quot;, &quot;PA&quot;, &quot;NC&quot;, &quot;MI&quot;, &quot;FL&quot;,…
+## $ pollster               &lt;chr&gt; &quot;Change Research&quot;, &quot;Change Research&quot;, &quot;Change R…
+## $ sponsor                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ start.date             &lt;chr&gt; &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/29/2020&quot;, &quot;10/2…
+## $ end.date               &lt;chr&gt; &quot;11/2/2020&quot;, &quot;11/2/2020&quot;, &quot;11/1/2020&quot;, &quot;11/1/20…
+## $ entry.date.time..et.   &lt;chr&gt; &quot;11/2/2020 23:42:00&quot;, &quot;11/2/2020 23:42:00&quot;, &quot;11…
+## $ number.of.observations &lt;dbl&gt; 920, 1024, 1084, 553, 699, 473, 383, 806, 409, …
+## $ population             &lt;chr&gt; &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;, &quot;lv&quot;,…
+## $ mode                   &lt;chr&gt; &quot;Online&quot;, &quot;Online&quot;, &quot;Online&quot;, &quot;Online&quot;, &quot;Online…
+## $ biden                  &lt;dbl&gt; 45, 52, 47, 53, 50, 49, 51, 51, 50, 52, 53, 50,…
+## $ trump                  &lt;dbl&gt; 50, 40, 47, 45, 46, 47, 44, 48, 47, 42, 41, 45,…
+## $ biden_margin           &lt;dbl&gt; -5, 12, 0, 8, 4, 2, 7, 3, 3, 10, 12, 5, 2, 13, …
+## $ other                  &lt;dbl&gt; 2, 6, 3, NA, NA, NA, NA, NA, NA, NA, 2, 1, 2, 1…
+## $ undecided              &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ url                    &lt;chr&gt; &quot;https://docs.google.com/spreadsheets/d/1TyQc9r…
+## $ include                &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,…
+## $ notes                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
 </div>
 <div id="pivoting-to-make-the-data-tidy-pivot-longer" class="section level3">
 <h3>Pivoting to make the data tidy (Pivot Longer)</h3>
@@ -125,18 +117,18 @@ output:
 <p>And now:</p>
 <pre class="r"><code>data_long</code></pre>
 <pre><code>## # A tibble: 3,228 x 17
-##    state pollster sponsor start.date end.date   entry.date.time…
-##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;date&gt;     &lt;chr&gt;           
-##  1 MT    Change … &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42…
-##  2 MT    Change … &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42…
-##  3 ME    Change … &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42…
-##  4 ME    Change … &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42…
-##  5 IA    Change … &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42…
-##  6 IA    Change … &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42…
-##  7 WI    Change … &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42…
-##  8 WI    Change … &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42…
-##  9 PA    Change … &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42…
-## 10 PA    Change … &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42…
+##    state pollster        sponsor start.date end.date   entry.date.time..et.
+##    &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;      &lt;date&gt;     &lt;chr&gt;               
+##  1 MT    Change Research &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42:00  
+##  2 MT    Change Research &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42:00  
+##  3 ME    Change Research &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42:00  
+##  4 ME    Change Research &lt;NA&gt;    10/29/2020 2020-11-02 11/2/2020 23:42:00  
+##  5 IA    Change Research &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42:00  
+##  6 IA    Change Research &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42:00  
+##  7 WI    Change Research &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42:00  
+##  8 WI    Change Research &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42:00  
+##  9 PA    Change Research &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42:00  
+## 10 PA    Change Research &lt;NA&gt;    10/29/2020 2020-11-01 11/2/2020 23:42:00  
 ## # … with 3,218 more rows, and 11 more variables: number.of.observations &lt;dbl&gt;,
 ## #   population &lt;chr&gt;, mode &lt;chr&gt;, biden_margin &lt;dbl&gt;, other &lt;dbl&gt;,
 ## #   undecided &lt;dbl&gt;, url &lt;chr&gt;, include &lt;lgl&gt;, notes &lt;chr&gt;, Vote_Choice &lt;chr&gt;,
@@ -150,8 +142,8 @@ swing_states &lt;- c(&quot;PA&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;AZ&qu
 </div>
 <div id="part-2-linking-the-data-to-visuals-mapping." class="section level2">
 <h2>Part 2: Linking the Data to Visuals (Mapping).</h2>
-<div id="mapping-is-how-you-connect-your-data-and-variables-with-the-visual-representations-of-a-graph.-we-will-do-this-in-two-steps." class="section level4">
-<h4>Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in two steps.</h4>
+<div id="mapping-is-how-you-connect-your-data-and-variables-with-the-visual-representations-of-a-graph.-we-will-do-this-in-three-steps." class="section level4">
+<h4>Mapping is how you connect your data and variables with the visual representations of a graph. We will do this in three steps.</h4>
 <ol style="list-style-type: decimal">
 <li><p><strong>The Data Step</strong>: Tell ggplot what your data is.</p></li>
 <li><p><strong>The Mapping Step</strong>: Tell ggplot <strong>what</strong> variables -&gt; visuals you want to see.</p></li>
@@ -167,9 +159,14 @@ geom_point()</code></pre>
 <p><img src="/code/_index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Bit of a mess. But we will make it prettier.</p>
 </div>
-<div id="which-aesthetics-i-can-use" class="section level3">
-<h3>Which Aesthetics I can use?</h3>
-<p><img src="/images/aes.png" /></p>
+<div id="what-do-you-see" class="section level3">
+<h3>What do you see?</h3>
+<ul>
+<li><p>How many variables?</p></li>
+<li><p>How many different Aesthetics?</p></li>
+<li><p>What else?</p></li>
+</ul>
+<p><img src="/images/res_no_band.png" /></p>
 </div>
 <div id="some-aesthethics-examples" class="section level3">
 <h3>Some Aesthethics Examples:</h3>
@@ -362,9 +359,21 @@ results</code></pre>
 <pre><code>## # A tibble: 2 x 5
 ##   term        estimate std.error statistic  p.value
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)  46.7      0.318       147.  0.      
+## 1 (Intercept)  46.7      0.318       147.  0       
 ## 2 days          0.0164   0.00156      10.5 2.06e-23</code></pre>
 <p>You can plot these quantities directly. The graph for you paper is basically ready.</p>
+<pre class="r"><code># a data frame
+results &lt;- tidy(lm_time)
+results %&gt;% 
+  filter(term!=&quot;(Intercept)&quot;) %&gt;%
+  mutate(up=estimate + 1.96*std.error,
+         lb=estimate - 1.96*std.error)  %&gt;%
+  ggplot(data=., aes(x=term,y=estimate, ymin=lb, ymax=up)) +
+  geom_pointrange(shape=21, fill=&quot;blue&quot;, color=&quot;black&quot;, alpha=.8) +
+  geom_hline(yintercept = 0, linetype=&quot;dashed&quot;, color=&quot;gray&quot;) +
+  coord_flip() +
+  theme_minimal() </code></pre>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 <div id="predicted-values-with-augment" class="section level3">
 <h3>Predicted Values with Augment</h3>
@@ -391,7 +400,7 @@ ggplot(data=.) +
   geom_ribbon(aes(y=.fitted, ymin=lb, ymax=ub, x=days), alpha=.2) +
   geom_line(aes(y=.fitted, x=days), color=&quot;blue&quot;) +
   geom_point(aes(y = Vote, x=days), alpha=.2) </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 </div>
 </div>
 <div id="running-multiple-models" class="section level2">
@@ -409,18 +418,18 @@ nested_data &lt;- state_polls %&gt;%
 nested_data</code></pre>
 <pre><code>## # A tibble: 47 x 2
 ## # Groups:   state [47]
-##    state data               
-##    &lt;chr&gt; &lt;list&gt;             
-##  1 MT    &lt;tibble [18 × 18]&gt; 
-##  2 ME    &lt;tibble [19 × 18]&gt; 
-##  3 IA    &lt;tibble [32 × 18]&gt; 
-##  4 WI    &lt;tibble [95 × 18]&gt; 
-##  5 PA    &lt;tibble [112 × 18]&gt;
-##  6 NC    &lt;tibble [104 × 18]&gt;
-##  7 MI    &lt;tibble [112 × 18]&gt;
-##  8 FL    &lt;tibble [105 × 18]&gt;
-##  9 AZ    &lt;tibble [88 × 18]&gt; 
-## 10 MN    &lt;tibble [34 × 18]&gt; 
+##    state data                    
+##    &lt;chr&gt; &lt;list&gt;                  
+##  1 MT    &lt;tibble[,18] [18 × 18]&gt; 
+##  2 ME    &lt;tibble[,18] [19 × 18]&gt; 
+##  3 IA    &lt;tibble[,18] [32 × 18]&gt; 
+##  4 WI    &lt;tibble[,18] [95 × 18]&gt; 
+##  5 PA    &lt;tibble[,18] [112 × 18]&gt;
+##  6 NC    &lt;tibble[,18] [104 × 18]&gt;
+##  7 MI    &lt;tibble[,18] [112 × 18]&gt;
+##  8 FL    &lt;tibble[,18] [105 × 18]&gt;
+##  9 AZ    &lt;tibble[,18] [88 × 18]&gt; 
+## 10 MN    &lt;tibble[,18] [34 × 18]&gt; 
 ## # … with 37 more rows</code></pre>
 <p>We have a data set with two collumns: the grouped variables and their corresponding data. The data column is called a <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html">list-column</a> because it works as a list where every element has a entire dataset. Since we have a list of datasets, we can use functional programming in purrr to run the same models for each of these datasets.</p>
 <pre class="r"><code>nested_data &lt;- nested_data %&gt;%
@@ -429,18 +438,18 @@ nested_data</code></pre>
 nested_data</code></pre>
 <pre><code>## # A tibble: 47 x 3
 ## # Groups:   state [47]
-##    state data                model 
-##    &lt;chr&gt; &lt;list&gt;              &lt;list&gt;
-##  1 MT    &lt;tibble [18 × 18]&gt;  &lt;lm&gt;  
-##  2 ME    &lt;tibble [19 × 18]&gt;  &lt;lm&gt;  
-##  3 IA    &lt;tibble [32 × 18]&gt;  &lt;lm&gt;  
-##  4 WI    &lt;tibble [95 × 18]&gt;  &lt;lm&gt;  
-##  5 PA    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
-##  6 NC    &lt;tibble [104 × 18]&gt; &lt;lm&gt;  
-##  7 MI    &lt;tibble [112 × 18]&gt; &lt;lm&gt;  
-##  8 FL    &lt;tibble [105 × 18]&gt; &lt;lm&gt;  
-##  9 AZ    &lt;tibble [88 × 18]&gt;  &lt;lm&gt;  
-## 10 MN    &lt;tibble [34 × 18]&gt;  &lt;lm&gt;  
+##    state data                     model 
+##    &lt;chr&gt; &lt;list&gt;                   &lt;list&gt;
+##  1 MT    &lt;tibble[,18] [18 × 18]&gt;  &lt;lm&gt;  
+##  2 ME    &lt;tibble[,18] [19 × 18]&gt;  &lt;lm&gt;  
+##  3 IA    &lt;tibble[,18] [32 × 18]&gt;  &lt;lm&gt;  
+##  4 WI    &lt;tibble[,18] [95 × 18]&gt;  &lt;lm&gt;  
+##  5 PA    &lt;tibble[,18] [112 × 18]&gt; &lt;lm&gt;  
+##  6 NC    &lt;tibble[,18] [104 × 18]&gt; &lt;lm&gt;  
+##  7 MI    &lt;tibble[,18] [112 × 18]&gt; &lt;lm&gt;  
+##  8 FL    &lt;tibble[,18] [105 × 18]&gt; &lt;lm&gt;  
+##  9 AZ    &lt;tibble[,18] [88 × 18]&gt;  &lt;lm&gt;  
+## 10 MN    &lt;tibble[,18] [34 × 18]&gt;  &lt;lm&gt;  
 ## # … with 37 more rows</code></pre>
 <p>We have now a new list-column with all our models. Now, let’s use <code>broom</code> to get quantities of interest.</p>
 <pre class="r"><code>nested_data &lt;- nested_data %&gt;% 
@@ -450,18 +459,18 @@ nested_data</code></pre>
 nested_data</code></pre>
 <pre><code>## # A tibble: 94 x 8
 ## # Groups:   state [47]
-##    state data            model  term      estimate std.error statistic   p.value
-##    &lt;chr&gt; &lt;list&gt;          &lt;list&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1 MT    &lt;tibble [18 × … &lt;lm&gt;   (Interce… 35.5       1.58       22.5   1.59e- 13
-##  2 MT    &lt;tibble [18 × … &lt;lm&gt;   days       0.0369    0.00725     5.09  1.09e-  4
-##  3 ME    &lt;tibble [19 × … &lt;lm&gt;   (Interce… 50.6       2.73       18.5   1.06e- 12
-##  4 ME    &lt;tibble [19 × … &lt;lm&gt;   days       0.00517   0.0127      0.407 6.89e-  1
-##  5 IA    &lt;tibble [32 × … &lt;lm&gt;   (Interce… 42.6       1.53       27.8   5.68e- 23
-##  6 IA    &lt;tibble [32 × … &lt;lm&gt;   days       0.0172    0.00690     2.50  1.81e-  2
-##  7 WI    &lt;tibble [95 × … &lt;lm&gt;   (Interce… 44.8       0.603      74.2   6.76e- 84
-##  8 WI    &lt;tibble [95 × … &lt;lm&gt;   days       0.0259    0.00294     8.83  6.60e- 14
-##  9 PA    &lt;tibble [112 ×… &lt;lm&gt;   (Interce… 46.4       0.486      95.4   7.18e-107
-## 10 PA    &lt;tibble [112 ×… &lt;lm&gt;   days       0.0172    0.00224     7.68  7.20e- 12
+##    state data             model  term     estimate std.error statistic   p.value
+##    &lt;chr&gt; &lt;list&gt;           &lt;list&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 MT    &lt;tibble[,18] [1… &lt;lm&gt;   (Interc… 35.5       1.58       22.5   1.59e- 13
+##  2 MT    &lt;tibble[,18] [1… &lt;lm&gt;   days      0.0369    0.00725     5.09  1.09e-  4
+##  3 ME    &lt;tibble[,18] [1… &lt;lm&gt;   (Interc… 50.6       2.73       18.5   1.06e- 12
+##  4 ME    &lt;tibble[,18] [1… &lt;lm&gt;   days      0.00517   0.0127      0.407 6.89e-  1
+##  5 IA    &lt;tibble[,18] [3… &lt;lm&gt;   (Interc… 42.6       1.53       27.8   5.68e- 23
+##  6 IA    &lt;tibble[,18] [3… &lt;lm&gt;   days      0.0172    0.00690     2.50  1.81e-  2
+##  7 WI    &lt;tibble[,18] [9… &lt;lm&gt;   (Interc… 44.8       0.603      74.2   6.76e- 84
+##  8 WI    &lt;tibble[,18] [9… &lt;lm&gt;   days      0.0259    0.00294     8.83  6.60e- 14
+##  9 PA    &lt;tibble[,18] [1… &lt;lm&gt;   (Interc… 46.4       0.486      95.4   7.18e-107
+## 10 PA    &lt;tibble[,18] [1… &lt;lm&gt;   days      0.0172    0.00224     7.68  7.20e- 12
 ## # … with 84 more rows</code></pre>
 <p>With the unnest, we have a beautiful tidy data set with our model parameters. More important, it is a single data frame with both informations: parameters and subgroups (states). Now, let’s plot:</p>
 <pre class="r"><code># first, remove the intercept
@@ -477,11 +486,11 @@ ggplot(to_plot, aes(x=fct_rev(state),y=estimate, ymin=lb, ymax=ub)) +
   coord_flip() +
   theme_minimal() +
   labs(x = &quot;Linear Time Trend by State&quot;,  y= &quot;Biden Support in the Polls&quot;)  </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 <div id="case-study-partisanship-covid-and-risk-perceptions-in-brazil." class="section level2">
 <h2>Case Study: Partisanship, Covid and Risk Perceptions in Brazil.</h2>
-<p>To conclude our workshop, I will show you the code my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses both experimental and observational data. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil. The paper and replication files can be found <a href="https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021">here</a> on my github account.</p>
+<p>To conclude our workshop, I will show you the code of my recent paper (co-authored with Ernesto Calvo) forthcoming at the Latin American Politics and Society. The paper is about partisanship and risk perceptions about COVID-19, and uses both experimental and observational data. I will focus on the descriptive analysis and the simple regression models we use to show partisan difference of risk perceptions in Brazil. The paper and replication files can be found <a href="https://github.com/TiagoVentura/Calvo_Ventura_LAPS_2021">here</a> on my github account.</p>
 <div id="risk-perceptions-and-partisanship" class="section level3">
 <h3>Risk Perceptions and Partisanship</h3>
 <p>The plan is to estimate a model of partisanship on three different outcomes. Let’s see how we can do this with the tools we learned so far.</p>
@@ -542,7 +551,7 @@ ggplot(to_plot, aes(y=estimate, x=labels_iv,
   theme_bw() +
   theme(strip.text = element_text(size=7),
         axis.text.x = element_blank()) </code></pre>
-<p><img src="/code/_index_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="/code/_index_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 </div>
 </div>
 </div>
