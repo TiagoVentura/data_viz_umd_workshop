@@ -230,6 +230,8 @@ geom_point() # the geom step
 
 ![](aes.png)
 
+---
+
 # Aesthethics: Color
 
 ```{r out.width='60%', fig.height=5}
